@@ -3,85 +3,11 @@
 import sys
 import json
 from pprint import pprint
-
-
-class Person():
-    def __init__(self, BirthCounty, BirthDay, BirthMonth, BirthOrder, BirthYear, FirstName, Gender, IsPartOfMultipleBirth, LastName, MiddleName, MotherFirstName, MotherLastName, MotherMiddleName, NewbornScreeningNumber, ObjectId, Phone1, Phone2, SocialSecurityNumber, StateFileNumber):
-        self.BirthCounty = BirthCounty
-        self.BirthDay = BirthDay
-        self.BirthMonth = BirthMonth 
-        self.BirthOrder = BirthOrder
-        self.BirthYear = BirthYear
-        self.FirstName = FirstName
-        self.Gender = Gender
-        self.IsPartOfMultipleBirth = IsPartOfMultipleBirth
-        self.LastName = LastName
-        self.MiddleName = MiddleName
-        self.MotherFirstName = MotherFirstName
-        self.MotherLastName = MotherLastName
-        self.MotherMiddleName = MotherMiddleName
-        self.NewbornScreeningNumber = NewbornScreeningNumber
-        self.ObjectId = ObjectId
-        self.Phone1 = Phone1
-        self.Phone2 = Phone2
-        self.SocialSecurityNumber = SocialSecurityNumber
-        self.StateFileNumber = StateFileNumber
-    
-    def printPerson(self):
-        stringer = "\t"+str(self.ObjectId)+" "+ str(self.FirstName) + " " +str(self.MiddleName)+ " " + str(self.LastName) + " " + str(self.BirthDay)+"/"+str(self.BirthMonth) + "/"+ str(self.BirthYear)
-        print stringer
-        # print self.BirthCounty 
-        # print self.BirthDay 
-        # print self.BirthMonth
-        # print self.BirthOrder
-        # print self.BirthYear 
-        # print self.FirstName 
-        # print self.Gender 
-        # print self.IsPartOfMultipleBirth
-        # print self.LastName 
-        # print self.MiddleName
-        # print self.MotherFirstName
-        # print self.MotherLastName 
-        # print self.MotherMiddleName
-        # print self.NewbornScreeningNumber
-        # print self.ObjectId
-        # print self.Phone1 
-        # print self.Phone2 
-        # print self.SocialSecurityNumber 
-        # print self.StateFileNumber 
-        
-
-class personCollection:
-    def __init__(self):
-        self.personCollectionArray = []
-        # self.dataInput = dataInput
-        # self.fileName = fileName
-        
-    def loadPeopleIntoCollection(self, dataInput, fileName):
-        self.personCollectionArray = dataInput.read(fileName)
-
-
-class dataInput: 
-    def __init__(self, name):
-        self.name = name
-    
-    def read():
-        pass
-
-class jsonInput(dataInput):
-    
-    def read(self, fileName):
-        returnList = []
-        dataFile = open("Data/"+fileName)
-        data = json.load(dataFile)
-        for i in data:
-            newPerson = Person(i["BirthCounty"], i["BirthDay"], i["BirthMonth"], i["BirthOrder"], i["BirthYear"], i["FirstName"], i["Gender"], i["IsPartOfMultipleBirth"], i["LastName"], i["MiddleName"], i["MotherFirstName"], i["MotherLastName"], i["MotherMiddleName"], i["NewbornScreeningNumber"], i["ObjectId"], i["Phone1"], i["Phone2"], i["SocialSecurityNumber"], i["StateFileNumber"])
-            returnList.append(newPerson)
-        return returnList
-
-
-class xmlInput(dataInput):
-    pass
+from person import Person
+import personCollection
+import dataInput
+import jsonInput
+import xmlInput
 
 class matchPair():
     def __init__(self, person1, person2):
