@@ -1,0 +1,10 @@
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/bin/Debug/netcoreapp2.0/strategyPattern.deps.json
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/bin/Debug/netcoreapp2.0/strategyPattern.runtimeconfig.json
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/bin/Debug/netcoreapp2.0/strategyPattern.runtimeconfig.dev.json
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/bin/Debug/netcoreapp2.0/strategyPattern.dll
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/bin/Debug/netcoreapp2.0/strategyPattern.pdb
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/obj/Debug/netcoreapp2.0/strategyPattern.csproj.CoreCompileInputs.cache
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/obj/Debug/netcoreapp2.0/strategyPattern.AssemblyInfoInputs.cache
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/obj/Debug/netcoreapp2.0/strategyPattern.AssemblyInfo.cs
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/obj/Debug/netcoreapp2.0/strategyPattern.dll
+/home/jfelzien/cs5700/hw1/c#/strategyPattern/obj/Debug/netcoreapp2.0/strategyPattern.pdb
