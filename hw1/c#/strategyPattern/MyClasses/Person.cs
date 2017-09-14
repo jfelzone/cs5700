@@ -27,7 +27,7 @@ namespace MyClasses
         public string StateFileNumber {get; set;}        
     
     public override string ToString(){
-        return "Id=" + ObjectId + ", Name="+FirstName+ MiddleName+ LastName + ", Birthday="+BirthDay+"/"+BirthMonth+"/"+BirthYear;
+        return "Id=" + ObjectId + ", Name="+FirstName +" "+ MiddleName+" "+ LastName + ", Birthday="+BirthDay+"/"+BirthMonth+"/"+BirthYear;
     }
 
     }

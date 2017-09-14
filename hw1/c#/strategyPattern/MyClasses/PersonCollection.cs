@@ -26,5 +26,9 @@ namespace MyClasses
         {
             collectionDataInput?.Read(this, CollectionDataFile);
         }
+
+        public int Length {
+        	get {return this.Length;}
+        }
 	}
 }
