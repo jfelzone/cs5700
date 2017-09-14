@@ -1,0 +1,15 @@
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/xunit.runner.visualstudio.dotnetcore.testadapter.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/xunit.runner.utility.netstandard15.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/xunit.runner.reporters.netstandard15.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypesTests.deps.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypesTests.runtimeconfig.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypesTests.runtimeconfig.dev.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypesTests.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypesTests.pdb
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypes.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/bin/Debug/netcoreapp2.0/NewTypes.pdb
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/obj/Debug/netcoreapp2.0/NewTypesTests.csproj.CoreCompileInputs.cache
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/obj/Debug/netcoreapp2.0/NewTypesTests.AssemblyInfoInputs.cache
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/obj/Debug/netcoreapp2.0/NewTypesTests.AssemblyInfo.cs
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/obj/Debug/netcoreapp2.0/NewTypesTests.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/test/NewTypesTests/obj/Debug/netcoreapp2.0/NewTypesTests.pdb
