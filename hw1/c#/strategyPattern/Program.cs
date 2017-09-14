@@ -1,6 +1,10 @@
 ﻿using System;
 using MyClasses;
 
+
+//jake felzien
+
+// command line arguments for our testing currently: 1 JSON_PersonTestSet_3.json Results.txt
 namespace strategyPattern
 {
     class Program
@@ -13,28 +17,32 @@ namespace strategyPattern
 
 
         private static readonly Output[] DataOutputList = new Output[]{
-        	new OutputConsole() {Name = "Console", Description = "Sending data to stdout Console"}
+        	new OutputConsole() {Name = "Console", Description = "Sending data to stdout Console"},
+			new OutputFile() {Name = "File", Description = "Sending data to output file"}
         };
 
         private static readonly Matcher[] MatcherList = new Matcher[]{
-        	new MatcherOne() {Name = "1", Description = "First Matching Algorithm"}
-        };
+        	new MatcherOne() {Name = "1", Description = "First Matching Algorithm, Firstname"},
+			new MatcherTwo() {Name = "2", Description = "Second Matching Algorithm, Firstname, Lastname, Social"},
+			new MatcherThree() {Name = "3", Description = "Third Matching Algorithm, Firstname, Lastname, Social, and Brithdate"}
+		};
 
         static void Main(string[] args)
         {
         	String[] arguments = Environment.GetCommandLineArgs();
 		    Console.WriteLine("GetCommandLineArgs: {0}", String.Join(", ", arguments));
 		    Console.WriteLine(arguments.Length);
-            Console.WriteLine("Hello World!");
-            Console.WriteLine(DataInputList[0].Name);
-            Console.WriteLine(DataInputList[0].Description);
-            Console.WriteLine(DataInputList[1].Name);
-            Console.WriteLine(DataInputList[1].Description);
+			//remove	
+				// Console.WriteLine("Hello World!");
+				// Console.WriteLine(DataInputList[0].Name);
+				// Console.WriteLine(DataInputList[0].Description);
+				// Console.WriteLine(DataInputList[1].Name);
+				// Console.WriteLine(DataInputList[1].Description);
 
-            Person bob = new Person(){FirstName = "Hello sicko", LastName = "dummy"};
-            Console.WriteLine(bob.ToString());
-            DataInput newInput = GetInputFormat(arguments[2]);
-            Console.WriteLine(newInput.Name);
+				// Person bob = new Person(){FirstName = "Hello sicko", LastName = "dummy"};
+				// Console.WriteLine(bob.ToString());
+			DataInput newInput = GetInputFormat(arguments[2]);
+			Console.WriteLine(newInput.Name);
 
             //ok now we need to play around with our person collection again
             // want to make a new person collection and pass in the datainput
@@ -93,7 +101,7 @@ namespace strategyPattern
   	    private static Output GetOutputType(string[] arg){
   	    	string outputtemp = null;
   	    	Output result = null;
-  	    	if (arg.Length <= 4){
+  	    	if (arg.Length <= 3){
   	    		outputtemp = "Console";
   	    	}
   	    	else {
@@ -102,6 +110,9 @@ namespace strategyPattern
   	    	foreach (Output item in DataOutputList){
   	    		if(item.Name == outputtemp){
   	    			result = item;
+					  if (result.Name == "File"){
+							result.FileName = arg[3];
+					  }
   	    		}
   	    	}
   	    	return result;
