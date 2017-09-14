@@ -10,7 +10,9 @@ namespace MyClasses
         //public abstract void Read(List<ThingABob> list, string filename);
         
         // this will need to take in a pair list
-        public abstract void Write(List<Person> list, string filename);
+        // this needs to be more extensible. 
+        	// for whatever reason it doesn't seem to extend unless it matches the parameters of the kids calling it
+        public abstract void Write(PairList list);
 
        
     }

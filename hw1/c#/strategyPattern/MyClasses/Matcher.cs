@@ -8,7 +8,7 @@ namespace MyClasses
         public string Description { get; set; }
         //public abstract void Write(List<ThingABob> list, string filename);
         //public abstract void Read(List<ThingABob> list, string filename);
-        public abstract void FindMatches(PersonCollection inPersonCol);
+        public abstract PairList FindMatches(PersonCollection inPersonCol);
 
        
     }

@@ -7,11 +7,14 @@ namespace MyClasses
        public Person First {get; set;}
        public Person Second {get; set;}
 
-       public Pair(first, second){
-       	this.First = first;
-       	this.Second = second;
+       public Pair(Person infirst, Person insecond){
+       		First = infirst;
+       		Second = insecond;
        }
 
+       public override string ToString(){
+       	return First.ToString() + "\n" + Second.ToString() + "\n"; 
+       }
        
     }
 }

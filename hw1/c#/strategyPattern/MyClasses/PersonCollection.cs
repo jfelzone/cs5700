@@ -28,7 +28,7 @@ namespace MyClasses
         }
 
         public int Length {
-        	get {return this.Length;}
+        	get{return base.Count;}
         }
 	}
 }
