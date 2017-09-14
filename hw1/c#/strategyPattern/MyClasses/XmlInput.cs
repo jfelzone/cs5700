@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Json;
+using System;
 
 namespace MyClasses
 {
     public class XmlInput : DataInput
     {
-        public string check {get; set;}
+          public override void Read(List<Person> list, string filename)
+        {
+            //filename = AppendExtension(filename, "json");
+            Console.WriteLine("worked");
+        }
         
         // private static readonly DataContractJsonSerializer JsonSerializer = new DataContractJsonSerializer(typeof(List<ThingABob>),
         //              new [] { typeof(ThingABob), typeof(Gadget), typeof(Widget) });

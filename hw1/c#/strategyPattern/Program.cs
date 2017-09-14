@@ -30,7 +30,9 @@ namespace strategyPattern
 
             //ok now we need to play around with our person collection again
             // want to make a new person collection and pass in the datainput
-            PersonCollection personList = new PersonCollection(newInput);
+            PersonCollection personList = new PersonCollection(newInput, arguments[2]);
+            personList.Read();
+            personList.PrintCollection();
             // now we have successfully passed in the input into the person collection. 
             // i want to then call the read function from within the collection i think. if i can
         }
