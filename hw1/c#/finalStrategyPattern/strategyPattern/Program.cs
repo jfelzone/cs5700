@@ -9,13 +9,10 @@ namespace strategyPattern
 {
     class Program
     {
-        private static readonly DataInput[] DataInputList = new DataInput[]
-                        {
+        private static readonly DataInput[] DataInputList = new DataInput[]{
                             new JsonInput() { Name = "JSON", Description  = "JavaScript Object Notation"},
                             new XmlInput() { Name = "XML", Description = "Extensible Markup Language"}
-                        };
-
-
+		};
         private static readonly Output[] DataOutputList = new Output[]{
         	new OutputConsole() {Name = "Console", Description = "Sending data to stdout Console"},
 			new OutputFile() {Name = "File", Description = "Sending data to output file"}
@@ -32,21 +29,12 @@ namespace strategyPattern
         	String[] arguments = Environment.GetCommandLineArgs();
 		    Console.WriteLine("GetCommandLineArgs: {0}", String.Join(", ", arguments));
 		    Console.WriteLine(arguments.Length);
-			//remove	
-				// Console.WriteLine("Hello World!");
-				// Console.WriteLine(DataInputList[0].Name);
-				// Console.WriteLine(DataInputList[0].Description);
-				// Console.WriteLine(DataInputList[1].Name);
-				// Console.WriteLine(DataInputList[1].Description);
-
-				// Person bob = new Person(){FirstName = "Hello sicko", LastName = "dummy"};
-				// Console.WriteLine(bob.ToString());
-			DataInput newInput = GetInputFormat(arguments[2]);
+			DataInput newInput = GetInputFormat(AppendFileDirectory(arguments[2]));
 			Console.WriteLine(newInput.Name);
 
             //ok now we need to play around with our person collection again
             // want to make a new person collection and pass in the datainput
-            PersonCollection personList = new PersonCollection(newInput, arguments[2]);
+            PersonCollection personList = new PersonCollection(newInput, AppendFileDirectory(arguments[2]));
             personList.Read();
             //personList.PrintCollection();
             // now we have successfully passed in the input into the person collection. 
@@ -62,14 +50,6 @@ namespace strategyPattern
 			// now we need to figure out how to determine the output... 
 			Output resultingOutput = GetOutputType(arguments);
 			Console.WriteLine(resultingOutput.Name);
-
-			// next i want something like this
-
-			// PersonPairList = personList.generatePairs(resultingMatcher);
-			// PersonPairList.sendOutput(outputtype)
-			//		what i did in python
-  			//		matchList = newMatcherArg.findMatches(personList)
-  			//		resultingMatcher.sendResults(matchList)
 
   			PairList resultingPairList = resultingMatcher.FindMatches(personList);
   			resultingOutput.Write(resultingPairList);
@@ -111,7 +91,9 @@ namespace strategyPattern
   	    		if(item.Name == outputtemp){
   	    			result = item;
 					  if (result.Name == "File"){
-							result.FileName = arg[3];
+							result.FileName = AppendOutputDirectory(arg[3]);
+					  } else{
+						  result.FileName = "";
 					  }
   	    		}
   	    	}
@@ -126,6 +108,14 @@ namespace strategyPattern
   	    	return true;
 
   	    }
+
+		private static string AppendFileDirectory(string arg){
+			return "InputFiles/"+arg;
+		}
+
+		private static string AppendOutputDirectory(string arg){
+			return "OutputFiles/"+arg;
+		}
 
     }
 

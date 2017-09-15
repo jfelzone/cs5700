@@ -11,7 +11,7 @@ namespace MyClasses
         //public abstract void Read(List<ThingABob> list, string filename);
         // this will need to take in a pair list
         // and also not return an int
-        public override void Write(PairList list, string filename){
+        public override void Write(PairList list){
             string[] lines = new string[list.Count];
         	int index = 0;
             foreach (Pair thing in list)
@@ -19,7 +19,7 @@ namespace MyClasses
             	lines[index] = thing.First.ObjectId+','+thing.Second.ObjectId;
                 index++;
             }
-            System.IO.File.WriteAllLines(filename, lines);
+            System.IO.File.WriteAllLines(FileName, lines);
 		}
 
        
