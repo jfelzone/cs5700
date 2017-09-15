@@ -29,13 +29,27 @@ namespace strategyPattern
         	String[] arguments = Environment.GetCommandLineArgs();
 		    Console.WriteLine("GetCommandLineArgs: {0}", String.Join(", ", arguments));
 		    Console.WriteLine(arguments.Length);
+			if (!ValidateCommandLineArguments(arguments)){
+				Console.WriteLine("Invalid arguments entered");
+				return;		
+			}
 			DataInput newInput = GetInputFormat(AppendFileDirectory(arguments[2]));
+			if (!IsValidObject(newInput)){
+				Console.WriteLine("Invalid data input");
+				return;				
+			}
 			Console.WriteLine(newInput.Name);
+			
 
             //ok now we need to play around with our person collection again
             // want to make a new person collection and pass in the datainput
             PersonCollection personList = new PersonCollection(newInput, AppendFileDirectory(arguments[2]));
+			if (!IsValidObject(personList)){
+				Console.WriteLine("Invalid person list");
+				return;				
+			}
             personList.Read();
+			
             //personList.PrintCollection();
             // now we have successfully passed in the input into the person collection. 
             // i want to then call the read function from within the collection i think. if i can
@@ -45,12 +59,20 @@ namespace strategyPattern
 
 			//real quick let's determine the type of matcher that we are going to run
 			Matcher resultingMatcher = GetMatcherAlgorithm(arguments[1]);
+			if (!IsValidObject(resultingMatcher)){
+				Console.WriteLine("Invalid person matcher");
+				return;				
+			}
 			Console.WriteLine(resultingMatcher.Name + " " + resultingMatcher.Description);
-
+			
 			// now we need to figure out how to determine the output... 
 			Output resultingOutput = GetOutputType(arguments);
+			if (!IsValidObject(resultingOutput)){
+				Console.WriteLine("Invalid data output entered");
+				return;				
+			}
 			Console.WriteLine(resultingOutput.Name);
-
+			
   			PairList resultingPairList = resultingMatcher.FindMatches(personList);
   			resultingOutput.Write(resultingPairList);
 
@@ -115,6 +137,14 @@ namespace strategyPattern
 
 		private static string AppendOutputDirectory(string arg){
 			return "OutputFiles/"+arg;
+		}
+
+		private static bool IsValidObject(object obj){
+			if (obj == null){
+				return false;
+			} else{
+				return true;
+			}
 		}
 
     }

@@ -7,7 +7,9 @@ namespace MyClasses
 	{
 		public DataInput collectionDataInput {get; set;}
 		public string CollectionDataFile {get; set;}
-
+        public int Length {
+        	get{return base.Count;}
+        }
 		 public PersonCollection(DataInput passedInInput, string passedinfile)
     	{
       	  	collectionDataInput = passedInInput;
@@ -27,8 +29,6 @@ namespace MyClasses
             collectionDataInput?.Read(this, CollectionDataFile);
         }
 
-        public int Length {
-        	get{return base.Count;}
-        }
+
 	}
 }
