@@ -1,0 +1,10 @@
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/bin/Debug/netcoreapp2.0/NewTypes.deps.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/bin/Debug/netcoreapp2.0/NewTypes.runtimeconfig.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/bin/Debug/netcoreapp2.0/NewTypes.runtimeconfig.dev.json
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/bin/Debug/netcoreapp2.0/NewTypes.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/bin/Debug/netcoreapp2.0/NewTypes.pdb
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/obj/Debug/netcoreapp2.0/NewTypes.csproj.CoreCompileInputs.cache
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/obj/Debug/netcoreapp2.0/NewTypes.AssemblyInfoInputs.cache
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/obj/Debug/netcoreapp2.0/NewTypes.AssemblyInfo.cs
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/obj/Debug/netcoreapp2.0/NewTypes.dll
+/home/jfelzien/cs5700/hw1/c#/MyProject/NewTypes/NewTypes/obj/Debug/netcoreapp2.0/NewTypes.pdb
