@@ -2,10 +2,12 @@
 import time
 try:
     # for Python2
-    from Tkinter import *   ## notice capitalized T in Tkinter 
+    from Tkinter import * 
+    import Tkinter as tk  ## notice capitalized T in Tkinter 
 except ImportError:
     # for Python3
     from tkinter import * 
+    import tkinter as tk
 
 from multiprocessing import Process
 #trying this, i think this will work. i need that shared memory bad
@@ -99,6 +101,10 @@ class MainApp:
             guiSub = Subscriber("GUI")
             sub.register(guiSub)
             print sub.subscribers
+
+            canvas = Canvas(root, width=800, height=800, bg="black")
+            root.title("Drawing")
+            canvas.pack()
 
 
 
