@@ -12,7 +12,8 @@ except ImportError:
 from multiprocessing import Process
 #trying this, i think this will work. i need that shared memory bad
 from thread import start_new_thread
-
+#for the text notifications
+import smtplib
 
 # file = open("simulation.csv", "r")
 
@@ -50,6 +51,22 @@ class guiTicker(Subscriber):
             if (self.calculateMovement(int(float(data[3]))) + self.movementList[-1]) < self.totalwindowsize:
                 self.canvas.move(self.shape, self.calculateMovement(int(float(data[3]))), 0)
                 self.movementList.append(self.movementList[-1] + self.calculateMovement(int(float(data[3]))))
+
+class emailObserver(Subscriber):
+    def __init__(self, name, jerseynumber, email, password):
+        self.name = name
+        self.email = email
+        self.password = password
+        self.server = smtplib.SMTP("smtp.gmail.com", 587)
+        self.server.starttls()
+        self.server.login(email, password)
+        self.jerseynumber = jerseynumber
+
+    def update(self, data):
+        if data[0] == "OnCourse" and int(data[1]) == int(self.jerseynumber): 
+            self.server.sendmail("App", "2089546530@vtext.com", str(data[1])+","+str(data[0])+","+str(data[3]))
+            #+", "+str(data[1])+", "+str(data[2])+", "+str(data[3]))
+            print self.name , ":" , data[0], data[1] , data[2], data[3]
 
 class Subject:
     def __init__(self):
@@ -98,6 +115,8 @@ class MainApp:
         self.raceTitle = StringVar()
         self.raceTime = IntVar()
         self.personNumber = IntVar()
+        self.email = StringVar()
+        self.password = StringVar()
 
 
         master.minsize(width=400, height=200)
@@ -153,6 +172,15 @@ class MainApp:
         l = Label(self.observerWindow, text="Enter number of person you wish to observe: ").pack()
         e = Entry(self.observerWindow, textvariable=self.personNumber)
         e.pack()
+
+        l = Label(self.observerWindow, text="Enter your email address: ").pack()
+        e = Entry(self.observerWindow, textvariable=self.email)
+        e.pack()
+
+        l = Label(self.observerWindow, text="Enter your password: ").pack()
+        e = Entry(self.observerWindow, show="*",textvariable=self.password)
+        e.pack()
+
         self.generate = Button(self.observerWindow, text="Generate Observers", command=self.generateObservers)
         self.generate.pack()
 
@@ -164,6 +192,24 @@ class MainApp:
         for i in self.checkVarsList:
             print i.get()
         print "\n"
+
+        if self.checkVarsList[0].get() == 1:
+            print 'generating gui'
+            # guiSub = guiTicker("GUI")
+            # sub.register(guiSub)
+            #print sub.subscribers
+            width = 1000
+            height = 300
+            self.windowEmail = tk.Toplevel(root)
+            self.windowEmail.wm_title("Graphical Updates")
+            self.windowEmail.minsize(width=width, height=height)
+            l = Label(self.windowEmail, text="Email Observer Created. ",font=("Helvetica", 24))
+            l.pack()
+            emailSub = emailObserver("email", self.personNumber.get(), self.email.get(), self.password.get())
+            self.sub.register(emailSub)
+
+        if self.checkVarsList[1].get() == 1:
+            pass
 
         if self.checkVarsList[2].get() == 1:
             print 'generating gui'
@@ -182,7 +228,9 @@ class MainApp:
             shape = canvas.create_line(10,height/2, width, height/2 ,fill="red")
             guiSub = guiTicker("GUI", canvas, 10, height/2, self.personNumber.get(), self.raceDist.get(), width)
             self.sub.register(guiSub)
-
+        
+        if self.checkVarsList[3].get() == 1:
+            pass
 
             
 
