@@ -46,9 +46,10 @@ class guiTicker(Subscriber):
 
     def update(self,data): 
         if data[0] == "OnCourse" and int(data[1]) == int(self.jerseynumber): 
-            print self.name , ":" , data            
-            self.canvas.move(self.shape, self.calculateMovement(int(float(data[3]))), 0)
-            self.movementList.append(self.calculateMovement(int(float(data[3]))))
+            print self.name , ":" , data
+            if (self.calculateMovement(int(float(data[3]))) + self.movementList[-1]) < self.totalwindowsize:
+                self.canvas.move(self.shape, self.calculateMovement(int(float(data[3]))), 0)
+                self.movementList.append(self.movementList[-1] + self.calculateMovement(int(float(data[3]))))
 
 class Subject:
     def __init__(self):
@@ -176,7 +177,7 @@ class MainApp:
             self.windowGui.minsize(width=1000, height=300)
 
             canvas = Canvas(self.windowGui, width=1000, height=300, bg="black")
-            self.windowGui.title("Race Ticker")
+            self.windowGui.title("Tracking Jersey #: "+str(self.personNumber.get()))
             canvas.pack()
             shape = canvas.create_line(10,height/2, width, height/2 ,fill="red")
             guiSub = guiTicker("GUI", canvas, 10, height/2, self.personNumber.get(), self.raceDist.get(), width)
