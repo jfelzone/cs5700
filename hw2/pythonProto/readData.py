@@ -68,6 +68,19 @@ class emailObserver(Subscriber):
             #+", "+str(data[1])+", "+str(data[2])+", "+str(data[3]))
             print self.name , ":" , data[0], data[1] , data[2], data[3]
 
+class listObserver(Subscriber):
+    def __init__(self, name, listbox, jerseynumber):
+        self.name = name
+        self.listbox = listbox
+        self.jerseynumber = jerseynumber
+
+    def update(self,data):
+        if data[0] == "OnCourse" and int(data[1]) == int(self.jerseynumber): 
+            print self.name , ":" , data
+            string = str(data[1])+", "+str(data[0])+", "+str(data[2])+", "+str(data[3])
+            self.listbox.insert(0, string)
+
+
 class Subject:
     def __init__(self):
         self.subscribers = set()
@@ -209,7 +222,19 @@ class MainApp:
             self.sub.register(emailSub)
 
         if self.checkVarsList[1].get() == 1:
-            pass
+            width = 1000
+            height = 500
+            self.listWindow = tk.Toplevel(root)
+            self.listWindow.wm_title("Tracking Jersey #: " + str(self.personNumber.get())+" Through List Window")
+            self.listWindow.minsize(width=width, height=height)
+            listbox = Listbox(self.listWindow)
+            listbox.config(width=100)
+            listbox.pack()
+
+            listboxsub = listObserver("listbox", listbox, self.personNumber.get())
+            self.sub.register(listboxsub)
+
+            # this gets moved to the subscriber class =>> listbox.insert(END, "a list entry")
 
         if self.checkVarsList[2].get() == 1:
             print 'generating gui'
@@ -219,7 +244,7 @@ class MainApp:
             width = 1000
             height = 300
             self.windowGui = tk.Toplevel(root)
-            self.windowGui.wm_title("Graphical Updates")
+            self.windowGui.wm_title("Tracking Jersey #: " + str(self.personNumber.get())+" Through Text Notifications")
             self.windowGui.minsize(width=1000, height=300)
 
             canvas = Canvas(self.windowGui, width=1000, height=300, bg="black")
