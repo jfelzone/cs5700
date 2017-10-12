@@ -29,6 +29,27 @@ class Subscriber():
         print self.name , ":" , data
 
 
+class guiTicker(Subscriber):
+
+    def __init__(self, name, canvas, xcoord, ycoord, jerseynumber, totaldistance, totalwindowsize):
+        self.name = name
+        self.canvas = canvas
+        self.shape = canvas.create_rectangle(xcoord, ycoord, 20, 5, fill = "blue")
+        self.jerseynumber = jerseynumber
+        self.totaldistance = totaldistance
+        self.totalwindowsize = totalwindowsize
+        self.movementList = [0]
+
+    def calculateMovement(self, currentPosition):
+        x = (self.totalwindowsize*currentPosition)/self.totaldistance
+        return x - self.movementList[-1]
+
+    def update(self,data): 
+        if data[0] == "OnCourse" and int(data[1]) == int(self.jerseynumber): 
+            print self.name , ":" , data            
+            self.canvas.move(self.shape, self.calculateMovement(int(float(data[3]))), 0)
+            self.movementList.append(self.calculateMovement(int(float(data[3]))))
+
 class Subject:
     def __init__(self):
         self.subscribers = set()
@@ -48,9 +69,9 @@ class Subject:
 
         for line in file:
             if line == "---\n":
-                time.sleep(1)
+                time.sleep(0.25)
             #print line.split(',')
-            self.dispatch(line)
+            self.dispatch(line.rstrip('\n').split(','))
     
     def threadedSimFunc(self):
         start_new_thread(self.dataSimulate, ())
@@ -61,50 +82,109 @@ class Subject:
 
 #i need to spin up a thread for the simulation to be running in the background.
 #if that will work
-sub = Subject() 
-test = Subscriber('test')
-sub.register(test)
+#moving these inside the application
+# sub = Subject() 
+# test = Subscriber('test')
+# sub.register(test)
 
-sub.threadedSimFunc()
+# sub.threadedSimFunc()
 
 
 class MainApp:
     def __init__(self, master):
-        self.checkVarsList = []
+        self.raceName = StringVar()
+        self.raceDist = IntVar()
+        self.raceTitle = StringVar()
+        self.raceTime = IntVar()
+        self.personNumber = IntVar()
+
 
         master.minsize(width=400, height=200)
         frame = Frame(master, width=200,  height=100)
         master.wm_title("Race Observer Generator")
         frame.pack()
 
-        self.observerNameList = ["Email Observer","List Observer","Gui Observer","MileStone Times Observer"]
-        for i in self.observerNameList:
-            self.checkVar = IntVar()
-            c = Checkbutton(frame, text = i , variable = self.checkVar)
-            c.pack()
-            self.checkVarsList.append(self.checkVar)
+        l = Label(frame, text="Enter a race name: ").pack()
+        e = Entry(frame, textvariable=self.raceName)
+        e.pack()
 
-        self.generate = Button(frame, text="Generate Observers", command=self.generateObservers)
-        self.generate.pack(side=LEFT)
+        l = Label(frame, text="Enter race total distance: ").pack()
+        e = Entry(frame, textvariable=self.raceDist)
+        e.pack()
 
+        l = Label(frame, text="Enter race title: ").pack()
+        e = Entry(frame, textvariable=self.raceTitle)
+        e.pack()
+
+        l = Label(frame, text="Enter race starting time: ").pack()
+        e = Entry(frame, textvariable=self.raceTime)
+        e.pack()
+
+
+        
+        self.startRace = Button(frame, text="Start Race", command=self.startRace)
+        self.startRace.pack()
         self.quitbutton = Button(frame, text="Quit", fg = "red", command = frame.quit)
         self.quitbutton.pack()
 
+    def startRace(self):
+        #moving these to here so that the start race can happen:
+        self.sub = Subject() 
+        test = Subscriber('test')
+        self.sub.register(test)
+
+        self.sub.threadedSimFunc()
+
+        self.observerWindow = tk.Toplevel(root)
+        self.observerWindow.wm_title("Graphical Updates")
+        self.observerWindow.minsize(width=1000, height=300)
+
+        self.checkVarsList = []
+        
+        self.observerNameList = ["Email Observer","List Observer","Gui Observer","MileStone Times Observer"]
+        for i in self.observerNameList:
+            self.checkVar = IntVar()
+            c = Checkbutton(self.observerWindow, text = i , variable = self.checkVar)
+            c.pack()
+            self.checkVarsList.append(self.checkVar)
+        
+
+        l = Label(self.observerWindow, text="Enter number of person you wish to observe: ").pack()
+        e = Entry(self.observerWindow, textvariable=self.personNumber)
+        e.pack()
+        self.generate = Button(self.observerWindow, text="Generate Observers", command=self.generateObservers)
+        self.generate.pack()
+
+
+
     def generateObservers(self):
         print "You clicked the button!!!!"
+        print self.personNumber.get()
         for i in self.checkVarsList:
             print i.get()
         print "\n"
 
         if self.checkVarsList[2].get() == 1:
             print 'generating gui'
-            guiSub = Subscriber("GUI")
-            sub.register(guiSub)
-            print sub.subscribers
+            # guiSub = guiTicker("GUI")
+            # sub.register(guiSub)
+            #print sub.subscribers
+            width = 1000
+            height = 300
+            self.windowGui = tk.Toplevel(root)
+            self.windowGui.wm_title("Graphical Updates")
+            self.windowGui.minsize(width=1000, height=300)
 
-            canvas = Canvas(root, width=800, height=800, bg="black")
-            root.title("Drawing")
+            canvas = Canvas(self.windowGui, width=1000, height=300, bg="black")
+            self.windowGui.title("Race Ticker")
             canvas.pack()
+            shape = canvas.create_line(10,height/2, width, height/2 ,fill="red")
+            guiSub = guiTicker("GUI", canvas, 10, height/2, self.personNumber.get(), self.raceDist.get(), width)
+            self.sub.register(guiSub)
+
+
+            
+
 
 
 
