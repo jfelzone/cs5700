@@ -166,6 +166,36 @@ class topRacersObserver(Subscriber):
 #     def generateString(self, inputer):
 #         return inputer[1]+', '+inputer[2]
 
+
+class streamer(Subscriber):
+    def __init__(self, name, listbox):
+        self.name = name
+        self.data = []
+        self.listbox = listbox
+    def update(self,data):
+        if data[0] != "---":
+            print self.name , ":" , data
+            string = self.getString(data)
+            self.listbox.insert(0, string)
+
+    def getString(self, data):
+        return data[1]
+
+
+class decorator(streamer):
+    def __init__(self, updater):
+        self.updater = updater
+        self.name = self.updater.name
+
+    def update(self, data):
+        if data[0] != "---":
+            string = self.getString(data)
+            self.updater.listbox.insert(0, string)
+
+    def getString(self, data):
+        return data[0] + " " + self.updater.getString(data)
+
+
 class Subject:
     def __init__(self):
         self.subscribers = set()
@@ -262,8 +292,9 @@ class MainApp:
 
         self.checkVarsList = []
         self.checkVarsListTopTen = []
+        self.checkVarsListStream = []
         
-        self.observerNameList = ["Email Observer","List Observer","Gui Observer","Athlete Comparison Observer", "Top Racers"]
+        self.observerNameList = ["Email Observer","List Observer","Gui Observer","Athlete Comparison Observer", "Top Racers", "Stream Updater"]
         for i in self.observerNameList:
             self.checkVar = IntVar()
             c = Checkbutton(self.observerWindow, text = i , variable = self.checkVar, font=("Helvetica", 24),bg="light blue")
@@ -432,17 +463,47 @@ class MainApp:
             toptensub = topRacersObserver("topten", listbox)
             self.sub.register(toptensub)
 
-            self.additionsList = ["Add Time","Add Distance"]
-            for i in self.additionsList:
-                self.checkVar = IntVar()
-                c = Checkbutton(self.toptenwindow, text = i , variable = self.checkVar, command= lambda: self.decorate(toptensub))
-                c.pack()
-                self.checkVarsListTopTen.append(self.checkVar)
+            # self.additionsList = ["Add Time","Add Distance"]
+            # for i in self.additionsList:
+            #     self.checkVar = IntVar()
+            #     c = Checkbutton(self.toptenwindow, text = i , variable = self.checkVar, command= lambda: self.decorate(toptensub))
+            #     c.pack()
+            #     self.checkVarsListTopTen.append(self.checkVar)
 
             self.toptenwindow.protocol('WM_DELETE_WINDOW', self.doNothing)
             button = Button (self.toptenwindow, text = "Unsubscribe.", command = lambda: self.unsubscribe(toptensub, self.toptenwindow))
             button.pack()
+        
+        if self.checkVarsList[5].get() == 1:
+            width = 1000
+            height = 500
+            self.streamWindow = tk.Toplevel(root)
+            self.streamWindow.wm_title("Real Time Stream Updates")
+            self.streamWindow.minsize(width=width, height=height)
+            listbox = Listbox(self.streamWindow)
+            listbox.config(width=100)
+            listbox.pack()
 
+            self.streamsub = streamer('streamer', listbox)
+            self.sub.register(self.streamsub)
+
+            self.additionsList = ["Add Second Column","Add Third Column"]
+            for i in self.additionsList:
+                self.checkVar = IntVar()
+                c = Checkbutton(self.streamWindow, text = i , variable = self.checkVar, command= lambda: self.decorating())
+                # c = Checkbutton(self.streamWindow, text = i , variable = self.checkVar)
+                c.pack()
+                self.checkVarsListStream.append(self.checkVar)
+
+            self.decorate = Button(self.streamWindow, text="Generate Decorations", command=self.decorateCommand)
+            self.decorate.pack()
+
+            print self.checkVarsListStream
+
+
+            self.streamWindow.protocol('WM_DELETE_WINDOW', self.doNothing)
+            button = Button (self.streamWindow, text = "Unsubscribe.", command = lambda: self.unsubscribe(self.streamsub, self.streamWindow))
+            button.pack()
 
 
     def unsubscribe(self, observer, window):
@@ -457,9 +518,15 @@ class MainApp:
     def doNothing(self):
         print "im not exiting"
 
-    def decorate(self, readytodecorate):
-        readytodecorate = topRacersObserverDecorator(readytodecorate)
+    def decorating(self):
+        print "made it here"
+        self.sub.unregister(self.streamsub)
+        self.streamsub = decorator(self.streamsub)
+        self.sub.register(self.streamsub)
+        #return readytodecorate
 
+    def decorateCommand(self):
+        return 0
 
 
 
