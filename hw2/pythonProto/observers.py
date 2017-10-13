@@ -1,3 +1,14 @@
+try:
+    # for Python2
+    from Tkinter import * 
+    import Tkinter as tk  ## notice capitalized T in Tkinter 
+    from tkMessageBox import *
+except ImportError:
+    # for Python3
+    from tkinter import * 
+    import tkinter as tk
+    from tkinter import messagebox
+
 #from subscriber import Subscriber
 class Subscriber():
     def __init__(self, name):
@@ -6,7 +17,7 @@ class Subscriber():
         print self.name , ":" , data
 
 
-class GuiTicker(Subscriber):
+class guiTicker(Subscriber):
 
     def __init__(self, name, canvas, xcoord, ycoord, jerseynumber, totaldistance, totalwindowsize):
         self.name = name

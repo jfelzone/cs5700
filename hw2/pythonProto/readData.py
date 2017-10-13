@@ -21,7 +21,6 @@ import smtplib
 #from subscriber import Subscriber
 from observers import *
 
-
 class Subject:
     def __init__(self):
         self.subscribers = set()
@@ -113,7 +112,7 @@ class MainApp:
         self.sub.threadedSimFunc()
 
         self.observerWindow = tk.Toplevel(root)
-        self.observerWindow.wm_title("Graphical Updates")
+        self.observerWindow.wm_title("Select Observers For: "+str(self.raceName.get()))
         self.observerWindow.minsize(width=1000, height=300)
 
         self.checkVarsList = []
@@ -181,7 +180,7 @@ class MainApp:
             # guiSub = guiTicker("GUI")
             # sub.register(guiSub)
             #print sub.subscribers
-            if self.email.get() == "" and self.password.get() == "" and self.personNumber.get() == 0:
+            if self.email.get() == "" or self.password.get() == "" or self.personNumber.get() == 0:
                 showerror("Error", "Sorry, enter email and password please")
             else:
                 width = 1000
