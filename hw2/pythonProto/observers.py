@@ -8,6 +8,7 @@ except ImportError:
     from tkinter import * 
     import tkinter as tk
     from tkinter import messagebox
+import smtplib
 
 #from subscriber import Subscriber
 class Subscriber():
