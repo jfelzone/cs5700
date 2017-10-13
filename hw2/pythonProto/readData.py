@@ -174,7 +174,7 @@ class MainApp:
 
         self.checkVarsList = []
         
-        self.observerNameList = ["Email Observer","List Observer","Gui Observer","MileStone Times Observer"]
+        self.observerNameList = ["Email Observer","List Observer","Gui Observer","Athlete Comparison Observer"]
         for i in self.observerNameList:
             self.checkVar = IntVar()
             c = Checkbutton(self.observerWindow, text = i , variable = self.checkVar)
@@ -182,7 +182,7 @@ class MainApp:
             self.checkVarsList.append(self.checkVar)
         
 
-        l = Label(self.observerWindow, text="Enter number of person you wish to observe: ").pack()
+        l = Label(self.observerWindow, text="Enter jersey number of the person you wish to observe: ").pack()
         e = Entry(self.observerWindow, textvariable=self.personNumber)
         e.pack()
 
