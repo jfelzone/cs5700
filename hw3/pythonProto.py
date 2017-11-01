@@ -140,8 +140,36 @@
 # if __name__ == '__main__':
 #     ge = Paint()
 
+class Command():
+    def __init__(self):
+        pass
+    
 
+class Class_Box(Command):
+    def __init__(self, a, b, c, d, canvasObject):
+        # we may actually only need two points for this rectangle (because it is just the upper left corner and the bottom corner)
+        #can we do all of the algorithmic stuff off of this... we should 
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.canvasObject = canvasObject
+        # we actually don't need this because the coordinate system essentially houses our four points, and thus what everything is conatined within
+        # self.x3 = 0
+        # self.y3 = 0
+        # self.x4 = 0
+        # self.y4 = 0
+        self.connections = []
 
+class Binary_Association(Command):
+    def __init__(self):
+        self.x1 = 0 
+        self.y1 = 0
+        self.x2 = 0
+        self.y2 = 0
+        self.connections = []
+
+#we need a command class for every one (adding this as we progress forward)
 
 import Tkinter as tk
 from Tkinter import *
@@ -149,34 +177,66 @@ from Tkinter import *
 class ExampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
+        self.minsize(width=700, height=700)
         self.x = self.y = 0
-        self.drawingObjectArray = [0, 0, 0, 0, 0, 0]
+        self.drawingObjectArray = [0, 0, 0, 0, 0, 0, 0]
+        
+        self.valid_move = False
+        self.moving_box = None
+        
+        #starting to prototype out some basic data structures (lists) for the main stack
+        # and then i think we will make a command object class or something of the sort
+        
+        self.stackList = []
+        #list.pop() will remove the last thing form the list
+        #list.append() will add to the stack 
+        
+        
+        self.diagram_name = Entry(self, foreground='grey')
+        self.diagram_name.grid(row=0, column = 0)
+        self.diagram_name.insert(0, "Enter a Diagram Name")
+        self.diagram_name.bind("<ButtonPress-1>", self.diagram_name_user)
+        
         self.class_button = Button(self, text='CLASS', command=self.create_class)
-        self.class_button.grid(row=0, column=0)
+        self.class_button.grid(row=1, column=0)
+        
+        self.class_button_move = Button(self, text='MOVE CLASS', command=self.move_class_bit)
+        self.class_button_move.grid(row=2, column=0)
 
         self.binary_association_button = Button(self, text='BINARY ASSOCIATION', command=self.create_binary_association)
-        self.binary_association_button.grid(row=1, column=0)
+        self.binary_association_button.grid(row=3, column=0)
 
         self.pen_button = Button(self, text='AGGREGATION', command=self.create_class)
-        self.pen_button.grid(row=2, column=0)
-
-        self.pen_button = Button(self, text='COMPOSITION', command=self.create_class)
-        self.pen_button.grid(row=3, column=0)
-
-        self.pen_button = Button(self, text='GENERALIZATION/\nSPECIALIZATION', command=self.create_class)
         self.pen_button.grid(row=4, column=0)
 
-        self.pen_button = Button(self, text='DEPENDENCY', command=self.create_class)
+        self.pen_button = Button(self, text='COMPOSITION', command=self.create_class)
         self.pen_button.grid(row=5, column=0)
 
-        self.pen_button = Button(self, text='CLEAR WORKSPACE', command=self.clear_canvas)
+        self.pen_button = Button(self, text='GENERALIZATION/\nSPECIALIZATION', command=self.create_class)
         self.pen_button.grid(row=6, column=0)
 
-        self.canvas = tk.Canvas(self, width=400, height=400, cursor="cross")
-        self.canvas.grid(row=0,rowspan=10,column=1)
+        self.pen_button = Button(self, text='DEPENDENCY', command=self.create_class)
+        self.pen_button.grid(row=7, column=0)
+
+        self.pen_button = Button(self, text='CLEAR WORKSPACE', command=self.clear_canvas)
+        self.pen_button.grid(row=8, column=0)
+        
+        self.pen_button = Button(self, text='LOAD WORKSPACE', command=self.clear_canvas)
+        self.pen_button.grid(row=0, column=1)
+        
+        self.pen_button = Button(self, text='SAVE WORKSPACE', command=self.clear_canvas)
+        self.pen_button.grid(row=0  , column=2)
+        
+        self.canvas = tk.Canvas(self, width=400, height=400, cursor="cross",borderwidth=3,background='white')
+        self.canvas.grid(row=2,rowspan=20,column=1, columnspan=20,sticky=SW)
         self.canvas.bind("<ButtonPress-1>", self.on_button_press)
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
 
+
+
+    def diagram_name_user(self, event):
+        self.diagram_name.config(fg='black')
+        self.diagram_name.delete(0, "end")
 
     def clear_canvas(self):
         self.canvas.delete("all")
@@ -188,22 +248,67 @@ class ExampleApp(tk.Tk):
     def on_button_press(self, event):
         #self.x = event.x
         if self.drawingObjectArray[0] == 1:
-            self.x = 40
+            self.x = 80
             #self.y = event.y
-            self.y = 40
-            x0,y0 = (event.x+self.x, event.y+self.y)
-            x1,y1 = (event.x, event.y)
-            self.canvas.create_rectangle(x0,y0,x1,y1)
-
+            self.y = 80
+            x0,y0 = (event.x, event.y)
+            x1,y1 = (event.x+self.x, event.y+self.y)
+            classCanvas = self.canvas.create_rectangle(x0,y0,x1,y1)
+            print classCanvas
+            # we need to pass in our canvas object
+            classBox = Class_Box(x0,y0,x1,y1,classCanvas)
+            self.stackList.append(classBox)
+            print self.stackList
+            for i in self.stackList:
+                #ok so with this we can check the type of our classes (which is awesome)
+                print isinstance(i, Class_Box)
         elif self.drawingObjectArray[1] == 1:
+            if not self.valid_move:
+                self.x = event.x
+                self.y = event.y
+                #now wanting to check if it is within any object
+                for i in self.stackList:
+                    if isinstance(i, Class_Box):
+                        if self.check_bound(self.x, self.y, i):
+                            print "You are in something!!!!"
+                            self.valid_move = True
+                            self.moving_box = i
+            elif self.valid_move:
+                self.x = 80
+                #self.y = event.y
+                self.y = 80
+                x0,y0 = (event.x, event.y)
+                x1,y1 = (event.x+self.x, event.y+self.y)
+                #need to update the commands and their parameters
+                self.canvas.coords(self.moving_box.canvasObject, x0, y0, x1, y1)
+                #need to reset stuff as well
+
+        elif self.drawingObjectArray[2] == 1:
             self.x = event.x
             self.y = event.y
 
     def on_button_release(self, event):
-        if self.drawingObjectArray[0]!=1:
+        if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
             self.canvas.create_line(x0,y0,x1,y1)
+            for i in self.stackList:
+                if isinstance(i, Class_Box):
+                    self.canvas.itemconfig(i.canvasObject,fill='white')
+                    self.canvas.tag_raise(i.canvasObject)
+                    print 'made it here'
+            #possible use for an arrow, but it doesn't look anthing like the arrow we need so likely we won't be using this
+            #arrow="last") 
+            #simply add this when we want a dashed line 
+            #dash=(2,4))
+            
+    def check_bound(self, x0, y0, classObject):
+        print "point:", x0, y0
+        print "square:", classObject.x0, classObject.y0, classObject.x1, classObject.y1
+        if (x0 > classObject.x0 and x0 < classObject.x1) and (y0 > classObject.y0 and y0 < classObject.y1):
+            return True
+        else:
+            return False
 
     def create_class(self):
         self.clear_array()
@@ -211,7 +316,11 @@ class ExampleApp(tk.Tk):
 
     def create_binary_association(self):
         self.clear_array()
-        self.drawingObjectArray[1]=1
+        self.drawingObjectArray[2]=1
+        
+    def move_class_bit(self):
+        self.clear_array()
+        self.drawingObjectArray[1] = 1 
 
 
 
