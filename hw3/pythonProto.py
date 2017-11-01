@@ -143,12 +143,12 @@
 class Command():
     def __init__(self):
         pass
-    
+
 
 class Class_Box(Command):
     def __init__(self, a, b, c, d, canvasObject):
         # we may actually only need two points for this rectangle (because it is just the upper left corner and the bottom corner)
-        #can we do all of the algorithmic stuff off of this... we should 
+        #can we do all of the algorithmic stuff off of this... we should
         self.x0 = a
         self.y0 = b
         self.x1 = c
@@ -163,7 +163,7 @@ class Class_Box(Command):
 
 class Binary_Association(Command):
     def __init__(self):
-        self.x1 = 0 
+        self.x1 = 0
         self.y1 = 0
         self.x2 = 0
         self.y2 = 0
@@ -180,59 +180,77 @@ class ExampleApp(tk.Tk):
         self.minsize(width=700, height=700)
         self.x = self.y = 0
         self.drawingObjectArray = [0, 0, 0, 0, 0, 0, 0]
-        
+
         self.valid_move = False
         self.moving_box = None
-        
+
         #starting to prototype out some basic data structures (lists) for the main stack
         # and then i think we will make a command object class or something of the sort
-        
+
         self.stackList = []
         #list.pop() will remove the last thing form the list
-        #list.append() will add to the stack 
-        
-        
+        #list.append() will add to the stack
+
+
         self.diagram_name = Entry(self, foreground='grey')
         self.diagram_name.grid(row=0, column = 0)
         self.diagram_name.insert(0, "Enter a Diagram Name")
         self.diagram_name.bind("<ButtonPress-1>", self.diagram_name_user)
-        
+
         self.class_button = Button(self, text='CLASS', command=self.create_class)
         self.class_button.grid(row=1, column=0)
-        
+
         self.class_button_move = Button(self, text='MOVE CLASS', command=self.move_class_bit)
         self.class_button_move.grid(row=2, column=0)
 
         self.binary_association_button = Button(self, text='BINARY ASSOCIATION', command=self.create_binary_association)
         self.binary_association_button.grid(row=3, column=0)
 
+        #open diamond solid line
         self.pen_button = Button(self, text='AGGREGATION', command=self.create_class)
         self.pen_button.grid(row=4, column=0)
 
+        #closed diamond solid line
         self.pen_button = Button(self, text='COMPOSITION', command=self.create_class)
         self.pen_button.grid(row=5, column=0)
 
+        #open triangle solid line
         self.pen_button = Button(self, text='GENERALIZATION/\nSPECIALIZATION', command=self.create_class)
         self.pen_button.grid(row=6, column=0)
 
-        self.pen_button = Button(self, text='DEPENDENCY', command=self.create_class)
-        self.pen_button.grid(row=7, column=0)
+        #dotted line with arrow arrow
+        self.dependency_button = Button(self, text='DEPENDENCY', command=self.create_dependency)
+        self.dependency_button.grid(row=7, column=0)
 
         self.pen_button = Button(self, text='CLEAR WORKSPACE', command=self.clear_canvas)
         self.pen_button.grid(row=8, column=0)
-        
+
         self.pen_button = Button(self, text='LOAD WORKSPACE', command=self.clear_canvas)
         self.pen_button.grid(row=0, column=1)
-        
-        self.pen_button = Button(self, text='SAVE WORKSPACE', command=self.clear_canvas)
-        self.pen_button.grid(row=0  , column=2)
-        
+
+        self.save_button = Button(self, text='SAVE WORKSPACE', command=self.save_canvas)
+        self.save_button.grid(row=0  , column=2)
+
+        self.save_file_entry = Entry(self, foreground='grey')
+        self.save_file_entry.grid(row=0, column = 3)
+        self.save_file_entry.insert(0, "Enter a File Save Name...Click Save Button")
+        self.save_file_entry.bind("<ButtonPress-1>", self.save_file_name_user)
+
         self.canvas = tk.Canvas(self, width=400, height=400, cursor="cross",borderwidth=3,background='white')
         self.canvas.grid(row=2,rowspan=20,column=1, columnspan=20,sticky=SW)
         self.canvas.bind("<ButtonPress-1>", self.on_button_press)
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
 
 
+
+    def save_file_name_user(self, event):
+        self.save_file_entry.config(fg='black')
+        self.save_file_entry.delete(0, "end")
+
+    def save_canvas(self):
+        text = self.save_button.get() + " " + e1.get() + "\n"
+        with open("text.txt", "a") as f:
+            f.write(text)
 
     def diagram_name_user(self, event):
         self.diagram_name.config(fg='black')
@@ -253,10 +271,13 @@ class ExampleApp(tk.Tk):
             self.y = 80
             x0,y0 = (event.x, event.y)
             x1,y1 = (event.x+self.x, event.y+self.y)
+            #this should be completely moved to within the execution portion of the class
             classCanvas = self.canvas.create_rectangle(x0,y0,x1,y1)
             print classCanvas
             # we need to pass in our canvas object
             classBox = Class_Box(x0,y0,x1,y1,classCanvas)
+            #this will be the job of the invoker to store all of the commands and then execute them all if any changes occur (with a clear_canvas())
+            # this will also be really nice because rather than doing the complicated coordinate changing, you would simply change the object and then when everything is re-drawn, it is just moved to the new location. easy. piece of cake
             self.stackList.append(classBox)
             print self.stackList
             for i in self.stackList:
@@ -267,12 +288,16 @@ class ExampleApp(tk.Tk):
                 self.x = event.x
                 self.y = event.y
                 #now wanting to check if it is within any object
-                for i in self.stackList:
+                for index, i in enumerate(self.stackList):
                     if isinstance(i, Class_Box):
                         if self.check_bound(self.x, self.y, i):
                             print "You are in something!!!!"
                             self.valid_move = True
+                            #this needs to be changed to an index value on the stack of commands
+                            #so that editing it in the future is much much easier....
+                            #because moving something twice won't work since i can't change the specific spot at which i need it to change and update
                             self.moving_box = i
+                            self.moving_box_index = index
             elif self.valid_move:
                 self.x = 80
                 #self.y = event.y
@@ -280,15 +305,20 @@ class ExampleApp(tk.Tk):
                 x0,y0 = (event.x, event.y)
                 x1,y1 = (event.x+self.x, event.y+self.y)
                 #need to update the commands and their parameters
-                self.canvas.coords(self.moving_box.canvasObject, x0, y0, x1, y1)
+                self.canvas.coords(self.stackList[self.moving_box_index].canvasObject, x0, y0, x1, y1)
+                self.stackList[self.moving_box_index].x0 = x0
+                self.stackList[self.moving_box_index].y0 = y0
+                self.stackList[self.moving_box_index].x1 = x1
+                self.stackList[self.moving_box_index].y1 = y1
+                self.valid_move = False
                 #need to reset stuff as well
 
-        elif self.drawingObjectArray[2] == 1:
+        elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1:
             self.x = event.x
             self.y = event.y
 
     def on_button_release(self, event):
-        if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1:
+        if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1 and self.drawingObjectArray[2] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
             self.canvas.create_line(x0,y0,x1,y1)
@@ -298,10 +328,20 @@ class ExampleApp(tk.Tk):
                     self.canvas.tag_raise(i.canvasObject)
                     print 'made it here'
             #possible use for an arrow, but it doesn't look anthing like the arrow we need so likely we won't be using this
-            #arrow="last") 
-            #simply add this when we want a dashed line 
+            #arrow="last")
+            #simply add this when we want a dashed line
             #dash=(2,4))
-            
+
+        elif self.drawingObjectArray[6] == 1:
+            x0,y0 = (self.x, self.y)
+            x1,y1 = (event.x, event.y)
+            self.canvas.create_line(x0,y0,x1,y1, dash=(2,4))
+            for i in self.stackList:
+                if isinstance(i, Class_Box):
+                    self.canvas.itemconfig(i.canvasObject,fill='white')
+                    self.canvas.tag_raise(i.canvasObject)
+                    print 'made it here'
+
     def check_bound(self, x0, y0, classObject):
         print "point:", x0, y0
         print "square:", classObject.x0, classObject.y0, classObject.x1, classObject.y1
@@ -317,10 +357,14 @@ class ExampleApp(tk.Tk):
     def create_binary_association(self):
         self.clear_array()
         self.drawingObjectArray[2]=1
-        
+
     def move_class_bit(self):
         self.clear_array()
-        self.drawingObjectArray[1] = 1 
+        self.drawingObjectArray[1] = 1
+
+    def create_dependency(self):
+        self.clear_array()
+        self.drawingObjectArray[6] = 1
 
 
 
