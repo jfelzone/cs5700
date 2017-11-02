@@ -1,152 +1,52 @@
-# Jake Felzien
-# a02019985
-# sample code for python
+#Jake Felzien
+#homework 3
+# final version designed from UML refined diagram
+import copy
 
-# from Tkinter import *
-#
-# canvas_width = 500
-# canvas_height = 150
-#
-# def paint( event ):
-#    python_green = "#476042"
-#    x1, y1 = ( event.x - 1 ), ( event.y - 1 )
-#    x2, y2 = ( event.x + 1 ), ( event.y + 1 )
-#    w.create_oval( x1, y1, x2, y2, fill = python_green )
-#
-# master = Tk()
-# master.title( "Painting using Ovals" )
-# w = Canvas(master,
-#            width=canvas_width,
-#            height=canvas_height)
-# w.pack(expand = YES, fill = BOTH)
-# w.bind( "<B1-Motion>", paint )
-#
-# message = Label( master, text = "Press and Drag the mouse to draw" )
-# message.pack( side = BOTTOM )
-#
-# mainloop()
 
-#
-# root = Tk()
-#
-# def hello():
-#     print "hello!"
-#
-# menubar = Menu(root)
-#
-# # create a pulldown menu, and add it to the menu bar
-# filemenu = Menu(menubar, tearoff=0)
-# filemenu.add_command(label="Open", command=hello)
-# filemenu.add_command(label="Save", command=hello)
-# filemenu.add_separator()
-# filemenu.add_command(label="Exit", command=root.quit)
-# menubar.add_cascade(label="File", menu=filemenu)
-#
-# # create more pulldown menus
-# editmenu = Menu(menubar, tearoff=0)
-# editmenu.add_command(label="Cut", command=hello)
-# editmenu.add_command(label="Copy", command=hello)
-# editmenu.add_command(label="Paste", command=hello)
-# menubar.add_cascade(label="Edit", menu=editmenu)
-#
-# helpmenu = Menu(menubar, tearoff=0)
-# helpmenu.add_command(label="About", command=hello)
-# menubar.add_cascade(label="Help", menu=helpmenu)
-#
-# mainloop()
-#
-#
-# from Tkinter import *
-# from tkColorChooser import askcolor
-# __author__ = 'Chuntao Lu'
-#
-#
-# class Paint(object):
-#
-#     DEFAULT_PEN_SIZE = 5.0
-#     DEFAULT_COLOR = 'black'
-#
-#     def __init__(self):
-#         self.root = Tk()
-#
-#         self.pen_button = Button(self.root, text='pen', command=self.use_pen)
-#         self.pen_button.grid(row=0, column=0)
-#
-#         self.brush_button = Button(self.root, text='brush', command=self.use_brush)
-#         self.brush_button.grid(row=0, column=1)
-#
-#         self.color_button = Button(self.root, text='color', command=self.choose_color)
-#         self.color_button.grid(row=0, column=2)
-#
-#         self.eraser_button = Button(self.root, text='eraser', command=self.use_eraser)
-#         self.eraser_button.grid(row=0, column=3)
-#
-#         self.choose_size_button = Scale(self.root, from_=1, to=10, orient=HORIZONTAL)
-#         self.choose_size_button.grid(row=0, column=4)
-#
-#         self.c = Canvas(self.root, bg='white', width=600, height=600)
-#         self.c.grid(row=1, columnspan=5)
-#
-#         self.setup()
-#         self.root.mainloop()
-#
-#     def setup(self):
-#         self.old_x = None
-#         self.old_y = None
-#         self.line_width = self.choose_size_button.get()
-#         self.color = self.DEFAULT_COLOR
-#         self.eraser_on = False
-#         self.active_button = self.pen_button
-#         self.c.bind('<B1-Motion>', self.paint)
-#         self.c.bind('<ButtonRelease-1>', self.reset)
-#
-#     def use_pen(self):
-#         self.activate_button(self.pen_button)
-#
-#     def use_brush(self):
-#         self.activate_button(self.brush_button)
-#
-#     def choose_color(self):
-#         self.eraser_on = False
-#         self.color = askcolor(color=self.color)[1]
-#
-#     def use_eraser(self):
-#         self.activate_button(self.eraser_button, eraser_mode=True)
-#
-#     #TODO: reset canvas
-#     #TODO: undo and redo
-#     #TODO: draw triangle, rectangle, oval, text
-#
-#     def activate_button(self, some_button, eraser_mode=False):
-#         self.active_button.config(relief=RAISED)
-#         some_button.config(relief=SUNKEN)
-#         self.active_button = some_button
-#         self.eraser_on = eraser_mode
-#
-#     def paint(self, event):
-#         self.line_width = self.choose_size_button.get()
-#         paint_color = 'white' if self.eraser_on else self.color
-#         if self.old_x and self.old_y:
-#             self.c.create_line(self.old_x, self.old_y, event.x, event.y,
-#                                width=self.line_width, fill=paint_color,
-#                                capstyle=ROUND, smooth=TRUE, splinesteps=36)
-#         self.old_x = event.x
-#         self.old_y = event.y
-#
-#     def reset(self, event):
-#         self.old_x, self.old_y = None, None
-#
-#
-# if __name__ == '__main__':
-#     ge = Paint()
+class UndoStack():
+    def __init__(self):
+        self.stack = []
+        #self.currentExecutionChain = []
 
+    def addExecutionChainCommand(self, executionChain):
+        # if len(self.stack) > 0:
+        #     currentExecutionChain = self.stack[-1][:]
+        # else:
+        #     currentExecutionChain = []
+        # currentExecutionChain.append(execution)
+
+        self.stack.append(executionChain)
+
+    def popOffExecutionChain(self):
+        self.stack.pop()
+
+
+#this is essentially my invoker class
+class CommandStack():
+
+    #array/stack to store the commands as they come in
+    def __init__(self):
+        self.commands = []
+
+    def add_command(self, command):
+        self.commands.append(command)
+
+    #method to call and execute the commands
+    def execute_commands(self):
+        for command in self.commands:
+            command.execute()
+
+#abstract command class that all other commands will inherit from
 class Command():
     def __init__(self):
         pass
-
     def execute(self):
         pass
 
+
+#first command class for drawing a square on our canvasObject
+# here im going to want to pass in the canvas object as well, but i think im going to want to do it differently than first iteration
 
 class Class_Box(Command):
     def __init__(self, a, b, c, d, canvasObject):
@@ -157,6 +57,7 @@ class Class_Box(Command):
         self.x1 = c
         self.y1 = d
         self.canvasObject = canvasObject
+        self.drawingSave = None
         # we actually don't need this because the coordinate system essentially houses our four points, and thus what everything is conatined within
         # self.x3 = 0
         # self.y3 = 0
@@ -164,13 +65,49 @@ class Class_Box(Command):
         # self.y4 = 0
         self.connections = []
 
+    def execute(self):
+        self.drawingSave = self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1)+self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1-50)
+
+
+#need a class for modifying previous classes (move execution process)
+#how in the world to implement this....
+# class Move_Class(Command):
+#     def __init__(self, )
+
+
+
+#i think this will be virtually the same again
 class Binary_Association(Command):
-    def __init__(self):
-        self.x1 = 0
-        self.y1 = 0
-        self.x2 = 0
-        self.y2 = 0
+    def __init__(self, a, b, c, d, canvasObject):
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.canvasObject = canvasObject
+        self.drawingSave = None
         self.connections = []
+
+    def execute(self):
+        self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
+
+
+#class Dependency
+
+class Dependency_Associotion(Command):
+    def __init__(self, a,b,c,d,canvasObject):
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.canvasObject = canvasObject
+        self.drawingSave = None
+        self.connections = []
+    def execute(self):
+        self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1, dash=(2,4))
+
+
+
+
 
 #we need a command class for every one (adding this as we progress forward)
 
@@ -190,9 +127,13 @@ class ExampleApp(tk.Tk):
         #starting to prototype out some basic data structures (lists) for the main stack
         # and then i think we will make a command object class or something of the sort
 
-        self.stackList = []
+        self.stackList = CommandStack()
+
+        #the one that will support the undo
+        self.realStackList = UndoStack()
+
         #list.pop() will remove the last thing form the list
-        #list.append() will add to the stack
+        #list.append() will add to the stack 
 
 
         self.diagram_name = Entry(self, foreground='grey')
@@ -275,23 +216,38 @@ class ExampleApp(tk.Tk):
             x0,y0 = (event.x, event.y)
             x1,y1 = (event.x+self.x, event.y+self.y)
             #this should be completely moved to within the execution portion of the class
-            classCanvas = self.canvas.create_rectangle(x0,y0,x1,y1)
-            print classCanvas
+            #classCanvas = self.canvas.create_rectangle(x0,y0,x1,y1)
+            #print classCanvas
             # we need to pass in our canvas object
-            classBox = Class_Box(x0,y0,x1,y1,classCanvas)
+            classBox = Class_Box(x0,y0,x1,y1,self.canvas)
             #this will be the job of the invoker to store all of the commands and then execute them all if any changes occur (with a clear_canvas())
             # this will also be really nice because rather than doing the complicated coordinate changing, you would simply change the object and then when everything is re-drawn, it is just moved to the new location. easy. piece of cake
-            self.stackList.append(classBox)
+            
+
+            #adding logic to get the undo to work properly
+            self.stackList.add_command(classBox)
+            addition = self.stackList
+            tempStackList = CommandStack()
+            if len(self.realStackList.stack) > 0:
+                for i in self.realStackList.stack[-1].commands:
+                    tempStackList.add_command(i)
+            tempStackList.add_command(classBox)
+            self.realStackList.addExecutionChainCommand(tempStackList)
+
+            #checking this is 2d for our simple squares
+            for i in self.realStackList.stack:
+                print len(i.commands)
             print self.stackList
-            for i in self.stackList:
+            for i in self.stackList.commands:
                 #ok so with this we can check the type of our classes (which is awesome)
                 print isinstance(i, Class_Box)
+
         elif self.drawingObjectArray[1] == 1:
             if not self.valid_move:
                 self.x = event.x
                 self.y = event.y
                 #now wanting to check if it is within any object
-                for index, i in enumerate(self.stackList):
+                for index, i in enumerate(self.stackList.commands):
                     if isinstance(i, Class_Box):
                         if self.check_bound(self.x, self.y, i):
                             print "You are in something!!!!"
@@ -308,27 +264,47 @@ class ExampleApp(tk.Tk):
                 x0,y0 = (event.x, event.y)
                 x1,y1 = (event.x+self.x, event.y+self.y)
                 #need to update the commands and their parameters
-                self.canvas.coords(self.stackList[self.moving_box_index].canvasObject, x0, y0, x1, y1)
-                self.stackList[self.moving_box_index].x0 = x0
-                self.stackList[self.moving_box_index].y0 = y0
-                self.stackList[self.moving_box_index].x1 = x1
-                self.stackList[self.moving_box_index].y1 = y1
+                #hypothetically it should be pretty straight forward to pass this all into another class
+                #which  will allow for the undo of moves as well (we need to add that button)
+                self.canvas.coords(self.stackList.commands[self.moving_box_index].drawingSave, x0, y0, x1, y1)
+                self.stackList.commands[self.moving_box_index].x0 = x0
+                self.stackList.commands[self.moving_box_index].y0 = y0
+                self.stackList.commands[self.moving_box_index].x1 = x1
+                self.stackList.commands[self.moving_box_index].y1 = y1
                 self.valid_move = False
                 #need to reset stuff as well
-
+        
         elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1:
             self.x = event.x
             self.y = event.y
+
+        # this can be put in a better spot, but making sure squares can be drawn right now
+        self.clear_canvas()
+        self.realStackList.stack[-1].execute_commands()
+        
+        #self.stackList.execute_commands()            
 
     def on_button_release(self, event):
         if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1 and self.drawingObjectArray[2] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
-            self.canvas.create_line(x0,y0,x1,y1)
-            for i in self.stackList:
+            #generating new command class
+            binaryLine = Binary_Association(x0,y0,x1,y1,self.canvas)
+            self.stackList.add_command(binaryLine)
+            addition = self.stackList
+            tempStackList = CommandStack()
+            if len(self.realStackList.stack) > 0:
+                for i in self.realStackList.stack[-1].commands:
+                    tempStackList.add_command(i)
+            tempStackList.add_command(binaryLine)
+            self.realStackList.addExecutionChainCommand(tempStackList)
+
+            # this is no longer needed:
+            #self.canvas.create_line(x0,y0,x1,y1)
+            for i in self.stackList.commands:
                 if isinstance(i, Class_Box):
-                    self.canvas.itemconfig(i.canvasObject,fill='white')
-                    self.canvas.tag_raise(i.canvasObject)
+                    self.canvas.itemconfig(i.drawingSave,fill='white')
+                    self.canvas.tag_raise(i.drawingSave)
                     print 'made it here'
             #possible use for an arrow, but it doesn't look anthing like the arrow we need so likely we won't be using this
             #arrow="last")
@@ -338,12 +314,28 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[6] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
-            self.canvas.create_line(x0,y0,x1,y1, dash=(2,4))
-            for i in self.stackList:
+            dashLine = Dependency_Associotion(x0, y0, x1, y1, self.canvas)
+            self.stackList.add_command(dashLine)
+
+            #so now this is irrelevant
+            # self.canvas.create_line(x0,y0,x1,y1, dash=(2,4))
+            for i in self.stackList.commands:
                 if isinstance(i, Class_Box):
                     self.canvas.itemconfig(i.canvasObject,fill='white')
                     self.canvas.tag_raise(i.canvasObject)
                     print 'made it here'
+
+
+        self.clear_canvas()
+        self.realStackList.stack[-1].execute_commands()
+        #self.stackList.execute_commands()  
+        #so this is needed after every clear to make sure the stuff is on top which i don't like....
+        #need to figure out how to encapsulate this
+        for i in self.stackList.commands:
+            if isinstance(i, Class_Box):
+                self.canvas.itemconfig(i.drawingSave,fill='white')
+                self.canvas.tag_raise(i.drawingSave)
+                print 'made it here'
 
     def check_bound(self, x0, y0, classObject):
         print "point:", x0, y0

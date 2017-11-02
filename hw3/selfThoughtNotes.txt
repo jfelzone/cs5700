@@ -1,0 +1,13 @@
+ok looking at lines 231 and on and wondering how to add the move command to my stack.
+i feel like a command like this will need to hold past state...otherwise undo will not work, and that is the kicker
+
+so another option would be to implement and use this specific class that stores a stack of all of my past stacks (or execution chains)
+(so this one would be like a dynamic 2d thing)
+and then from there, you could implement and change things, and then roll back to the previous state pretty easily
+
+i might need to change up some names so that the stackList is something else like execution chain or something of the sort
+and then the undo button would just remove the last one on this stack
+and then any time we would add to the execution chain, you would push the current state onto the stack and then generate the new one and push it on as well (don't do this twice though. i need that to work better)
+
+in my mind this seems like complexity for complexity's sake, but that is the name of the game right?
+because with each iteration we are going to need to play around with generating a new execution change every single time... hmm. kinda ugly. but it doesn't really matter
