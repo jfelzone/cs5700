@@ -11,3 +11,8 @@ and then any time we would add to the execution chain, you would push the curren
 
 in my mind this seems like complexity for complexity's sake, but that is the name of the game right?
 because with each iteration we are going to need to play around with generating a new execution change every single time... hmm. kinda ugly. but it doesn't really matter
+
+ok i think we have all of the logic working for the undo now, which should allow me to move forward with the move command seperated out i believe
+
+i need to encapulate that process in a function as well as the refresh stuff in a function as well. (should be easy)
+let's do that now

@@ -292,9 +292,9 @@ class ExampleApp(tk.Tk):
             self.y = event.y
 
         # this can be put in a better spot, but making sure squares can be drawn right now
-        self.clear_canvas()
-        self.realStackList.stack[-1].execute_commands()
-        
+        # self.clear_canvas()
+        # self.realStackList.stack[-1].execute_commands()
+        self.refresh_canvas()    
         #self.stackList.execute_commands()            
 
     def on_button_release(self, event):
@@ -338,9 +338,9 @@ class ExampleApp(tk.Tk):
                     self.canvas.tag_raise(i.canvasObject)
                     print 'made it here'
 
-
-        self.clear_canvas()
-        self.realStackList.stack[-1].execute_commands()
+        self.refresh_canvas()
+        # self.clear_canvas()
+        # self.realStackList.stack[-1].execute_commands()
         #self.stackList.execute_commands()  
         #so this is needed after every clear to make sure the stuff is on top which i don't like....
         #need to figure out how to encapsulate this
@@ -349,6 +349,10 @@ class ExampleApp(tk.Tk):
                 self.canvas.itemconfig(i.drawingSave,fill='white')
                 self.canvas.tag_raise(i.drawingSave)
                 print 'made it here'
+
+    def refresh_canvas(self):
+        self.clear_canvas()
+        self.realStackList.stack[-1].execute_commands()
 
     def check_bound(self, x0, y0, classObject):
         print "point:", x0, y0
