@@ -91,7 +91,7 @@ class Binary_Association(Command):
 
 #class Dependency
 
-class Dependency_Associotion(Command):
+class Dependency_Association(Command):
     def __init__(self, a,b,c,d,canvasObject):
         self.x0 = a
         self.y0 = b
@@ -231,19 +231,10 @@ class ExampleApp(tk.Tk):
             #print classCanvas
             # we need to pass in our canvas object
             classBox = Class_Box(x0,y0,x1,y1,self.canvas)
+            self.add_stack_push_sequence(classBox)
             #this will be the job of the invoker to store all of the commands and then execute them all if any changes occur (with a clear_canvas())
             # this will also be really nice because rather than doing the complicated coordinate changing, you would simply change the object and then when everything is re-drawn, it is just moved to the new location. easy. piece of cake
             
-
-            #adding logic to get the undo to work properly
-            self.stackList.add_command(classBox)
-            addition = self.stackList
-            tempStackList = CommandStack()
-            if len(self.realStackList.stack) > 0:
-                for i in self.realStackList.stack[-1].commands:
-                    tempStackList.add_command(i)
-            tempStackList.add_command(classBox)
-            self.realStackList.addExecutionChainCommand(tempStackList)
 
             #checking this is 2d for our simple squares
             for i in self.realStackList.stack:
@@ -301,14 +292,7 @@ class ExampleApp(tk.Tk):
             x1,y1 = (event.x, event.y)
             #generating new command class
             binaryLine = Binary_Association(x0,y0,x1,y1,self.canvas)
-            self.stackList.add_command(binaryLine)
-            addition = self.stackList
-            tempStackList = CommandStack()
-            if len(self.realStackList.stack) > 0:
-                for i in self.realStackList.stack[-1].commands:
-                    tempStackList.add_command(i)
-            tempStackList.add_command(binaryLine)
-            self.realStackList.addExecutionChainCommand(tempStackList)
+            self.add_stack_push_sequence(binaryLine)
 
             # this is no longer needed:
             #self.canvas.create_line(x0,y0,x1,y1)
@@ -325,7 +309,7 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[6] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
-            dashLine = Dependency_Associotion(x0, y0, x1, y1, self.canvas)
+            dashLine = Dependency_Association(x0, y0, x1, y1, self.canvas)
             self.stackList.add_command(dashLine)
 
             #so now this is irrelevant
@@ -347,6 +331,18 @@ class ExampleApp(tk.Tk):
                 self.canvas.itemconfig(i.drawingSave,fill='white')
                 self.canvas.tag_raise(i.drawingSave)
                 print 'made it here'
+
+
+    def add_stack_push_sequence(self, command):
+        self.stackList.add_command(command)
+        #addition = self.stackList
+        tempStackList = CommandStack()
+        if len(self.realStackList.stack) > 0:
+            for i in self.realStackList.stack[-1].commands:
+                tempStackList.add_command(i)
+        tempStackList.add_command(command)
+        self.realStackList.addExecutionChainCommand(tempStackList)
+
 
     def refresh_canvas(self):
         self.clear_canvas()
