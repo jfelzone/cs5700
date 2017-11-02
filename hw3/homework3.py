@@ -169,6 +169,10 @@ class ExampleApp(tk.Tk):
         self.pen_button = Button(self, text='CLEAR WORKSPACE', command=self.clear_canvas)
         self.pen_button.grid(row=8, column=0)
 
+        self.undo_button = Button(self, text='UNDO', fg= 'red', command=self.undo_command)
+        self.undo_button.grid(row=9, column=0)
+
+
         self.pen_button = Button(self, text='LOAD WORKSPACE', command=self.clear_canvas)
         self.pen_button.grid(row=0, column=1)
 
@@ -186,6 +190,15 @@ class ExampleApp(tk.Tk):
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
 
 
+    def undo_command(self):
+        self.realStackList.popOffExecutionChain()
+        print 'checking undo button removes element correctly:'
+        for i in self.realStackList.stack:
+                print len(i.commands)
+        print 'check complete'
+
+        self.clear_canvas()
+        self.realStackList.stack[-1].execute_commands()
 
     def save_file_name_user(self, event):
         self.save_file_entry.config(fg='black')
