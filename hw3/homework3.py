@@ -1,8 +1,6 @@
 #Jake Felzien
 #homework 3
 # final version designed from UML refined diagram
-import copy
-
 
 class UndoStack():
     def __init__(self):

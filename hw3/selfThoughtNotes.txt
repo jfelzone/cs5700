@@ -16,3 +16,6 @@ ok i think we have all of the logic working for the undo now, which should allow
 
 i need to encapulate that process in a function as well as the refresh stuff in a function as well. (should be easy)
 let's do that now
+
+
+ok. so the move also still works the old way, so i just need to figure out how to wrap this up in a correct fashion... changing the state of the current stack and then pushing another one on or something along those lines
