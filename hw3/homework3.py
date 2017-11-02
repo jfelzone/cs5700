@@ -347,6 +347,10 @@ class ExampleApp(tk.Tk):
     def refresh_canvas(self):
         self.clear_canvas()
         self.realStackList.stack[-1].execute_commands()
+        for i in self.realStackList.stack[-1].commands:
+            if isinstance(i, Class_Box):
+                self.canvas.itemconfig(i.drawingSave,fill='white')
+                self.canvas.tag_raise(i.drawingSave)
 
     def check_bound(self, x0, y0, classObject):
         print "point:", x0, y0
