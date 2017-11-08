@@ -1,6 +1,7 @@
 #Jake Felzien
 #homework 3
 # final version designed from UML refined diagram
+import math
 
 class UndoStack():
     def __init__(self):
@@ -47,7 +48,7 @@ class Command():
 # here im going to want to pass in the canvas object as well, but i think im going to want to do it differently than first iteration
 
 class Class_Box(Command):
-    def __init__(self, a, b, c, d, canvasObject):
+    def __init__(self, a, b, c, d, canvasObject, classNameString):
         # we may actually only need two points for this rectangle (because it is just the upper left corner and the bottom corner)
         #can we do all of the algorithmic stuff off of this... we should
         self.x0 = a
@@ -56,6 +57,7 @@ class Class_Box(Command):
         self.y1 = d
         self.canvasObject = canvasObject
         self.drawingSave = None
+        self.classNameString = classNameString
         # we actually don't need this because the coordinate system essentially houses our four points, and thus what everything is conatined within
         # self.x3 = 0
         # self.y3 = 0
@@ -64,7 +66,8 @@ class Class_Box(Command):
         self.connections = []
 
     def execute(self):
-        self.drawingSave = self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1)+self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1-50)
+        self.drawingSave = self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1)+self.canvasObject.create_rectangle(self.x0, self.y0, self.x1, self.y1-50)+self.canvasObject.create_text(self.x0+40,self.y0+10,fill="darkblue",font="Times 10 italic bold",
+                        text=self.classNameString)
 
 
 #need a class for modifying previous classes (move execution process)
@@ -97,13 +100,95 @@ class Dependency_Association(Command):
         self.y0 = b
         self.x1 = c
         self.y1 = d
+        self.diagPointX = self.x0
+        self.diagPointY = self.y0
+        self.otherX = 0
+        self.otherY = 0
+        self.otherX2 = 0
+        self.otherY2 = 0
         self.canvasObject = canvasObject
         self.drawingSave = None
         self.connections = []
+
+    def getSlope(self):
+        return float(self.y1-self.y0)/float(self.x1-self.x0)
+
+    def getInterceptB(self):
+        return self.y1 - (self.getSlope()*self.x1)
+
+    def distance(self, x0, x1, y0, y1):
+        return math.sqrt(math.pow((x0-x1),2)+math.pow((y0-y1),2))
+
+    def getDiagonalPointFromStart(self):
+        # diagPointX = self.x0
+        # diagPointY = self.y0
+        while distance(diagPointX, self.x0, diagPointY, self.y0)  < 10:
+            diagPointX += 1
+            diagPointY = self.getSlope()*diagPointX+self.getInterceptB()
+
+    def getOtherSquarePoints(self):
+        tempxc = (self.x0+ self.diagPointX)/2
+        tempyc = (self.y0+self.diagPointY)/2
+        tempxd = (self.x0 - self.diagPointX)/2
+        tempyd = (self.y0 - self.diagPointY)/2
+
+        self.otherX = tempxc - tempyd
+        self.otherY = tempyc + tempxd
+        self.otherX2 = tempxc + tempyd
+        self.otherY2 = tempyc - tempxd
+
     def execute(self):
         self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1, dash=(2,4))
 
+class Aggregation_Association(Command):
+    def __init__(self,a,b,c,d,canvasObject):
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.diagPointX = self.x0
+        self.diagPointY = self.y0
+        self.otherX = 0
+        self.otherY = 0
+        self.otherX2 = 0
+        self.otherY2 = 0
+        self.canvasObject = canvasObject
+        self.drawingSave = None
+        self.connections = []
 
+    def getSlope(self):
+        return float(self.y1-self.y0)/float(self.x1-self.x0)
+
+    def getInterceptB(self):
+        return self.y1 - (self.getSlope()*self.x1)
+
+    def distance(self, x0, x1, y0, y1):
+        return math.sqrt(math.pow((x0-x1),2)+math.pow((y0-y1),2))
+
+    def getDiagonalPointFromStart(self):
+        # diagPointX = self.x0
+        # diagPointY = self.y0
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
+            self.diagPointX += 1
+            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+
+    def getOtherSquarePoints(self):
+        tempxc = (self.x0+ self.diagPointX)/2
+        tempyc = (self.y0+self.diagPointY)/2
+        tempxd = (self.x0 - self.diagPointX)/2
+        tempyd = (self.y0 - self.diagPointY)/2
+
+        self.otherX = tempxc - tempyd
+        self.otherY = tempyc + tempxd
+        self.otherX2 = tempxc + tempyd
+        self.otherY2 = tempyc - tempxd
+
+
+    def execute(self):
+        self.getDiagonalPointFromStart()
+        self.getOtherSquarePoints()
+        self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
+        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2)
 
 
 
@@ -121,6 +206,7 @@ class ExampleApp(tk.Tk):
 
         self.valid_move = False
         self.moving_box = None
+        self.classNameString = "default"
 
         #starting to prototype out some basic data structures (lists) for the main stack
         # and then i think we will make a command object class or something of the sort
@@ -130,8 +216,9 @@ class ExampleApp(tk.Tk):
         #the one that will support the undo
         self.realStackList = UndoStack()
 
+
         #list.pop() will remove the last thing form the list
-        #list.append() will add to the stack 
+        #list.append() will add to the stack
 
 
         self.diagram_name = Entry(self, foreground='grey')
@@ -149,7 +236,7 @@ class ExampleApp(tk.Tk):
         self.binary_association_button.grid(row=3, column=0)
 
         #open diamond solid line
-        self.pen_button = Button(self, text='AGGREGATION', command=self.create_class)
+        self.pen_button = Button(self, text='AGGREGATION', command=self.create_aggregation)
         self.pen_button.grid(row=4, column=0)
 
         #closed diamond solid line
@@ -230,11 +317,11 @@ class ExampleApp(tk.Tk):
             #classCanvas = self.canvas.create_rectangle(x0,y0,x1,y1)
             #print classCanvas
             # we need to pass in our canvas object
-            classBox = Class_Box(x0,y0,x1,y1,self.canvas)
+            classBox = Class_Box(x0,y0,x1,y1,self.canvas,self.classNameString)
             self.add_stack_push_sequence(classBox)
             #this will be the job of the invoker to store all of the commands and then execute them all if any changes occur (with a clear_canvas())
             # this will also be really nice because rather than doing the complicated coordinate changing, you would simply change the object and then when everything is re-drawn, it is just moved to the new location. easy. piece of cake
-            
+
 
             #checking this is 2d for our simple squares
             for i in self.realStackList.stack:
@@ -275,16 +362,16 @@ class ExampleApp(tk.Tk):
                 self.stackList.commands[self.moving_box_index].y1 = y1
                 self.valid_move = False
                 #need to reset stuff as well
-        
-        elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1:
+
+        elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1 or self.drawingObjectArray[3]==1:
             self.x = event.x
             self.y = event.y
 
         # this can be put in a better spot, but making sure squares can be drawn right now
         # self.clear_canvas()
         # self.realStackList.stack[-1].execute_commands()
-        self.refresh_canvas()    
-        #self.stackList.execute_commands()            
+        self.refresh_canvas()
+        #self.stackList.execute_commands()
 
     def on_button_release(self, event):
         if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1 and self.drawingObjectArray[2] == 1:
@@ -306,11 +393,19 @@ class ExampleApp(tk.Tk):
             #simply add this when we want a dashed line
             #dash=(2,4))
 
+        elif self.drawingObjectArray[3] == 1:
+            x0,y0 = (self.x, self.y)
+            x1,y1 = (event.x, event.y)
+            #generating new command class
+            aggregationLine = Aggregation_Association(x0,y0,x1,y1,self.canvas)
+            self.add_stack_push_sequence(aggregationLine)
+
         elif self.drawingObjectArray[6] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
             dashLine = Dependency_Association(x0, y0, x1, y1, self.canvas)
-            self.stackList.add_command(dashLine)
+            self.add_stack_push_sequence(dashLine)
+            #self.stackList.add_command(dashLine)
 
             #so now this is irrelevant
             # self.canvas.create_line(x0,y0,x1,y1, dash=(2,4))
@@ -323,7 +418,7 @@ class ExampleApp(tk.Tk):
         self.refresh_canvas()
         # self.clear_canvas()
         # self.realStackList.stack[-1].execute_commands()
-        #self.stackList.execute_commands()  
+        #self.stackList.execute_commands()
         #so this is needed after every clear to make sure the stuff is on top which i don't like....
         #need to figure out how to encapsulate this
         for i in self.stackList.commands:
@@ -361,12 +456,25 @@ class ExampleApp(tk.Tk):
             return False
 
     def create_class(self):
+        self.top = Toplevel()
+        self.top.title("Class Creation...")
+        msg = Message(self.top, text="Please enter a class name:")
+        msg.pack()
+        self.classEntry = Entry(self.top)
+        self.classEntry.pack()
+        enterButton = Button(self.top, text="ENTER", command=self.close_window)
+        enterButton.pack()
+
         self.clear_array()
         self.drawingObjectArray[0]=1
 
     def create_binary_association(self):
         self.clear_array()
         self.drawingObjectArray[2]=1
+
+    def create_aggregation(self):
+        self.clear_array()
+        self.drawingObjectArray[3]=1
 
     def move_class_bit(self):
         self.clear_array()
@@ -376,6 +484,10 @@ class ExampleApp(tk.Tk):
         self.clear_array()
         self.drawingObjectArray[6] = 1
 
+
+    def close_window(self):
+        self.classNameString = self.classEntry.get()
+        self.top.destroy()
 
 
 
