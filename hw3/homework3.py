@@ -190,7 +190,116 @@ class Aggregation_Association(Command):
         self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
         self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='white',outline='black')
 
+#class for COMPOSITION
+class Composition_Association(Command):
+    def __init__(self,a,b,c,d,canvasObject):
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.diagPointX = self.x0
+        self.diagPointY = self.y0
+        self.otherX = 0
+        self.otherY = 0
+        self.otherX2 = 0
+        self.otherY2 = 0
+        self.canvasObject = canvasObject
+        self.drawingSave = None
+        self.connections = []
 
+    def getSlope(self):
+        return float(self.y1-self.y0)/float(self.x1-self.x0)
+
+    def getInterceptB(self):
+        return self.y1 - (self.getSlope()*self.x1)
+
+    def distance(self, x0, x1, y0, y1):
+        return math.sqrt(math.pow((x0-x1),2)+math.pow((y0-y1),2))
+
+    def getDiagonalPointFromStart(self):
+        # diagPointX = self.x0
+        # diagPointY = self.y0
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
+            self.diagPointX += 1
+            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+
+    def getOtherSquarePoints(self):
+        tempxc = (self.x0+ self.diagPointX)/2
+        tempyc = (self.y0+self.diagPointY)/2
+        tempxd = (self.x0 - self.diagPointX)/2
+        tempyd = (self.y0 - self.diagPointY)/2
+
+        self.otherX = tempxc - tempyd
+        self.otherY = tempyc + tempxd
+        self.otherX2 = tempxc + tempyd
+        self.otherY2 = tempyc - tempxd
+
+
+    def execute(self):
+        self.getDiagonalPointFromStart()
+        self.getOtherSquarePoints()
+        self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
+        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='black',outline='black')
+
+
+#now for the GENERALIZATION class
+class Generalization_Association(Command):
+    def __init__(self,a,b,c,d,canvasObject):
+        self.x0 = a
+        self.y0 = b
+        self.x1 = c
+        self.y1 = d
+        self.diagPointX = self.x0
+        self.diagPointY = self.y0
+        self.otherX = 0
+        self.otherY = 0
+        self.otherX2 = 0
+        self.otherY2 = 0
+        self.canvasObject = canvasObject
+        self.drawingSave = None
+        self.connections = []
+
+    def getSlope(self):
+        return float(self.y1-self.y0)/float(self.x1-self.x0)
+
+    def getInterceptB(self):
+        return self.y1 - (self.getSlope()*self.x1)
+
+    def distance(self, x0, x1, y0, y1):
+        return math.sqrt(math.pow((x0-x1),2)+math.pow((y0-y1),2))
+
+    def getDiagonalPointFromStart(self):
+        # diagPointX = self.x0
+        # diagPointY = self.y0
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
+            self.diagPointX += 1
+            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+
+    def getDiagonalPointFromEnd(self):
+        # diagPointX = self.x0
+        # diagPointY = self.y0
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  > 5:
+            self.diagPointX -= 1
+            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+
+    def getOtherSquarePoints(self):
+        tempxc = (self.x0+ self.diagPointX)/2
+        tempyc = (self.y0+self.diagPointY)/2
+        tempxd = (self.x0 - self.diagPointX)/2
+        tempyd = (self.y0 - self.diagPointY)/2
+
+        self.otherX = tempxc - tempyd
+        self.otherY = tempyc + tempxd
+        self.otherX2 = tempxc + tempyd
+        self.otherY2 = tempyc - tempxd
+
+
+    def execute(self):
+        self.getDiagonalPointFromStart()
+        self.getOtherSquarePoints()
+        self.getDiagonalPointFromEnd()
+        self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
+        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='white',outline='black')
 
 #we need a command class for every one (adding this as we progress forward)
 
@@ -236,16 +345,16 @@ class ExampleApp(tk.Tk):
         self.binary_association_button.grid(row=3, column=0)
 
         #open diamond solid line
-        self.pen_button = Button(self, text='AGGREGATION', command=self.create_aggregation)
-        self.pen_button.grid(row=4, column=0)
+        self.aggregation_button = Button(self, text='AGGREGATION', command=self.create_aggregation)
+        self.aggregation_button.grid(row=4, column=0)
 
         #closed diamond solid line
-        self.pen_button = Button(self, text='COMPOSITION', command=self.create_class)
-        self.pen_button.grid(row=5, column=0)
+        self.composition_button = Button(self, text='COMPOSITION', command=self.create_composition)
+        self.composition_button.grid(row=5, column=0)
 
         #open triangle solid line
-        self.pen_button = Button(self, text='GENERALIZATION/\nSPECIALIZATION', command=self.create_class)
-        self.pen_button.grid(row=6, column=0)
+        self.generalization_button = Button(self, text='GENERALIZATION/\nSPECIALIZATION', command=self.create_generalization)
+        self.generalization_button.grid(row=6, column=0)
 
         #dotted line with arrow arrow
         self.dependency_button = Button(self, text='DEPENDENCY', command=self.create_dependency)
@@ -363,7 +472,7 @@ class ExampleApp(tk.Tk):
                 self.valid_move = False
                 #need to reset stuff as well
 
-        elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1 or self.drawingObjectArray[3]==1:
+        elif self.drawingObjectArray[2] == 1 or self.drawingObjectArray[6] == 1 or self.drawingObjectArray[3]==1 or self.drawingObjectArray[4]==1 or self.drawingObjectArray[5] == 1:
             self.x = event.x
             self.y = event.y
 
@@ -399,6 +508,20 @@ class ExampleApp(tk.Tk):
             #generating new command class
             aggregationLine = Aggregation_Association(x0,y0,x1,y1,self.canvas)
             self.add_stack_push_sequence(aggregationLine)
+
+        elif self.drawingObjectArray[4] == 1:
+            x0,y0 = (self.x, self.y)
+            x1,y1 = (event.x, event.y)
+            #generating new command class
+            compositionLine = Composition_Association(x0,y0,x1,y1,self.canvas)
+            self.add_stack_push_sequence(compositionLine)
+
+        elif self.drawingObjectArray[5] == 1:
+            x0,y0 = (self.x, self.y)
+            x1,y1 = (event.x, event.y)
+            #generating new command class
+            generalizationLine = Generalization_Association(x0,y0,x1,y1,self.canvas)
+            self.add_stack_push_sequence(generalizationLine)
 
         elif self.drawingObjectArray[6] == 1:
             x0,y0 = (self.x, self.y)
@@ -468,6 +591,10 @@ class ExampleApp(tk.Tk):
         self.clear_array()
         self.drawingObjectArray[0]=1
 
+    def move_class_bit(self):
+        self.clear_array()
+        self.drawingObjectArray[1] = 1
+
     def create_binary_association(self):
         self.clear_array()
         self.drawingObjectArray[2]=1
@@ -476,9 +603,13 @@ class ExampleApp(tk.Tk):
         self.clear_array()
         self.drawingObjectArray[3]=1
 
-    def move_class_bit(self):
+    def create_composition(self):
         self.clear_array()
-        self.drawingObjectArray[1] = 1
+        self.drawingObjectArray[4]=1
+
+    def create_generalization(self):
+        self.clear_array()
+        self.drawingObjectArray[5]=1
 
     def create_dependency(self):
         self.clear_array()
