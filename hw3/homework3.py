@@ -169,11 +169,17 @@ class Aggregation_Association(Command):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
-            if self.getSlope() < 0:
+            if self.getSlope() < 0 and self.y0 < self.y1:
                 self.diagPointX -= 1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
-            elif self.getSlope() > 0:
+            elif self.getSlope() < 0 and self.y0 > self.y1:
                 self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 < self.y1:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 > self.y1:
+                self.diagPointX -=1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
@@ -525,6 +531,21 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[3] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
+
+            #adding lock to edge logic
+            for index, i in enumerate(self.stackList.commands):
+                if isinstance(i, Class_Box):
+                    if self.check_bound(self.x, self.y, i):
+                        print "You are in a box"
+                        if y1 < i.y0:
+                            y0 = i.y0
+                        elif x1 > i.x1:
+                            x0 = i.x1
+                        elif y1 > i.y1:
+                            y0 = i.y1
+                        elif x1 < i.x0:
+                            x0 = i.x0
+
             #generating new command class
             aggregationLine = Aggregation_Association(x0,y0,x1,y1,self.canvas)
             self.add_stack_push_sequence(aggregationLine)
