@@ -335,7 +335,7 @@ from Tkinter import *
 class ExampleApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
-        self.minsize(width=700, height=700)
+        self.minsize(width=800, height=700)
         self.x = self.y = 0
         self.drawingObjectArray = [0, 0, 0, 0, 0, 0, 0]
 
@@ -404,7 +404,7 @@ class ExampleApp(tk.Tk):
         self.save_file_entry.insert(0, "Enter a File Save Name...Click Save Button")
         self.save_file_entry.bind("<ButtonPress-1>", self.save_file_name_user)
 
-        self.canvas = tk.Canvas(self, width=400, height=400, cursor="cross",borderwidth=3,background='white')
+        self.canvas = tk.Canvas(self, width=600, height=600, cursor="cross",borderwidth=3,background='white')
         self.canvas.grid(row=2,rowspan=20,column=1, columnspan=20,sticky=SW)
         self.canvas.bind("<ButtonPress-1>", self.on_button_press)
         self.canvas.bind("<ButtonRelease-1>", self.on_button_release)
