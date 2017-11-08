@@ -188,7 +188,7 @@ class Aggregation_Association(Command):
         self.getDiagonalPointFromStart()
         self.getOtherSquarePoints()
         self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
-        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2)
+        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='white',outline='black')
 
 
 
