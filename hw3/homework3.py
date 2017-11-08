@@ -169,8 +169,12 @@ class Aggregation_Association(Command):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
-            self.diagPointX += 1
-            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            if self.getSlope() < 0:
+                self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
         tempxc = (self.x0+ self.diagPointX)/2
@@ -185,6 +189,8 @@ class Aggregation_Association(Command):
 
 
     def execute(self):
+        print "here is slope:", self.getSlope()
+
         self.getDiagonalPointFromStart()
         self.getOtherSquarePoints()
         self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
@@ -220,8 +226,12 @@ class Composition_Association(Command):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
-            self.diagPointX += 1
-            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            if self.getSlope() < 0:
+                self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
         tempxc = (self.x0+ self.diagPointX)/2
@@ -271,16 +281,24 @@ class Generalization_Association(Command):
     def getDiagonalPointFromStart(self):
         # diagPointX = self.x0
         # diagPointY = self.y0
-        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
-            self.diagPointX += 1
-            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 20:
+            if self.getSlope() < 0:
+                self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getDiagonalPointFromEnd(self):
         # diagPointX = self.x0
         # diagPointY = self.y0
-        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  > 5:
-            self.diagPointX -= 1
-            self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+        while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  > 10:
+            if self.getSlope() < 0:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0:
+                self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
         tempxc = (self.x0+ self.diagPointX)/2
@@ -299,8 +317,10 @@ class Generalization_Association(Command):
         self.getOtherSquarePoints()
         self.getDiagonalPointFromEnd()
         self.drawingSave = self.canvasObject.create_line(self.x0, self.y0, self.x1, self.y1)
-        self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='white',outline='black')
-
+        if self.getSlope() > 0:
+            self.canvasObject.create_polygon(self.x0, self.y0, self.otherX, self.otherY, self.diagPointX, self.diagPointY, self.otherX2, self.otherY2, fill='white',outline='black')
+        else:
+            self.canvasObject.create_polygon(self.x0, self.y0, self.otherX2, self.otherY2, self.diagPointX, self.diagPointY, self.otherX, self.otherY, fill='white',outline='black')
 #we need a command class for every one (adding this as we progress forward)
 
 import Tkinter as tk
