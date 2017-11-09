@@ -232,11 +232,17 @@ class Composition_Association(Command):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 10:
-            if self.getSlope() < 0:
+            if self.getSlope() < 0 and self.y0 < self.y1:
                 self.diagPointX -= 1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
-            elif self.getSlope() > 0:
+            elif self.getSlope() < 0 and self.y0 > self.y1:
                 self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 < self.y1:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 > self.y1:
+                self.diagPointX -=1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
@@ -288,22 +294,34 @@ class Generalization_Association(Command):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  < 20:
-            if self.getSlope() < 0:
+            if self.getSlope() < 0 and self.y0 < self.y1:
                 self.diagPointX -= 1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
-            elif self.getSlope() > 0:
+            elif self.getSlope() < 0 and self.y0 > self.y1:
                 self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 < self.y1:
+                self.diagPointX += 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 > self.y1:
+                self.diagPointX -=1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getDiagonalPointFromEnd(self):
         # diagPointX = self.x0
         # diagPointY = self.y0
         while self.distance(self.diagPointX, self.x0, self.diagPointY, self.y0)  > 10:
-            if self.getSlope() < 0:
+            if self.getSlope() < 0 and self.y0 < self.y1:
                 self.diagPointX += 1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
-            elif self.getSlope() > 0:
+            elif self.getSlope() < 0 and self.y0 > self.y1:
                 self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 < self.y1:
+                self.diagPointX -= 1
+                self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
+            elif self.getSlope() > 0 and self.y0 > self.y1:
+                self.diagPointX +=1
                 self.diagPointY = self.getSlope()*self.diagPointX+self.getInterceptB()
 
     def getOtherSquarePoints(self):
@@ -505,7 +523,9 @@ class ExampleApp(tk.Tk):
         # this can be put in a better spot, but making sure squares can be drawn right now
         # self.clear_canvas()
         # self.realStackList.stack[-1].execute_commands()
-        self.refresh_canvas()
+
+        #this needs to be better resolved for the flow of refreshing. it gets called too often here
+    #self.refresh_canvas()
         #self.stackList.execute_commands()
 
     def on_button_release(self, event):
@@ -545,6 +565,16 @@ class ExampleApp(tk.Tk):
                             y0 = i.y1
                         elif x1 < i.x0:
                             x0 = i.x0
+                    if self.check_bound(x1,y1,i):
+                        #one final sequence for the connections
+                        if y0 < i.y0:
+                            y1 = i.y0
+                        elif x0 > i.x1:
+                            x1 = i.x1
+                        elif y0 > i.y1:
+                            y1 = i.y1
+                        elif x0 < i.x0:
+                            x1 = i.x0
 
             #generating new command class
             aggregationLine = Aggregation_Association(x0,y0,x1,y1,self.canvas)
@@ -553,6 +583,29 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[4] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
+            #adding lock to edge logic
+            for index, i in enumerate(self.stackList.commands):
+                if isinstance(i, Class_Box):
+                    if self.check_bound(self.x, self.y, i):
+                        print "You are in a box"
+                        if y1 < i.y0:
+                            y0 = i.y0
+                        elif x1 > i.x1:
+                            x0 = i.x1
+                        elif y1 > i.y1:
+                            y0 = i.y1
+                        elif x1 < i.x0:
+                            x0 = i.x0
+                    if self.check_bound(x1,y1,i):
+                        #one final sequence for the connections
+                        if y0 < i.y0:
+                            y1 = i.y0
+                        elif x0 > i.x1:
+                            x1 = i.x1
+                        elif y0 > i.y1:
+                            y1 = i.y1
+                        elif x0 < i.x0:
+                            x1 = i.x0
             #generating new command class
             compositionLine = Composition_Association(x0,y0,x1,y1,self.canvas)
             self.add_stack_push_sequence(compositionLine)
@@ -560,6 +613,29 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[5] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
+            #adding lock to edge logic
+            for index, i in enumerate(self.stackList.commands):
+                if isinstance(i, Class_Box):
+                    if self.check_bound(self.x, self.y, i):
+                        print "You are in a box"
+                        if y1 < i.y0:
+                            y0 = i.y0
+                        elif x1 > i.x1:
+                            x0 = i.x1
+                        elif y1 > i.y1:
+                            y0 = i.y1
+                        elif x1 < i.x0:
+                            x0 = i.x0
+                    if self.check_bound(x1,y1,i):
+                        #one final sequence for the connections
+                        if y0 < i.y0:
+                            y1 = i.y0
+                        elif x0 > i.x1:
+                            x1 = i.x1
+                        elif y0 > i.y1:
+                            y1 = i.y1
+                        elif x0 < i.x0:
+                            x1 = i.x0
             #generating new command class
             generalizationLine = Generalization_Association(x0,y0,x1,y1,self.canvas)
             self.add_stack_push_sequence(generalizationLine)
@@ -567,17 +643,32 @@ class ExampleApp(tk.Tk):
         elif self.drawingObjectArray[6] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
+            #adding lock to edge logic
+            for index, i in enumerate(self.stackList.commands):
+                if isinstance(i, Class_Box):
+                    if self.check_bound(self.x, self.y, i):
+                        print "You are in a box"
+                        if y1 < i.y0:
+                            y0 = i.y0
+                        elif x1 > i.x1:
+                            x0 = i.x1
+                        elif y1 > i.y1:
+                            y0 = i.y1
+                        elif x1 < i.x0:
+                            x0 = i.x0
+                    if self.check_bound(x1,y1,i):
+                        #one final sequence for the connections
+                        if y0 < i.y0:
+                            y1 = i.y0
+                        elif x0 > i.x1:
+                            x1 = i.x1
+                        elif y0 > i.y1:
+                            y1 = i.y1
+                        elif x0 < i.x0:
+                            x1 = i.x0
             dashLine = Dependency_Association(x0, y0, x1, y1, self.canvas)
             self.add_stack_push_sequence(dashLine)
             #self.stackList.add_command(dashLine)
-
-            #so now this is irrelevant
-            # self.canvas.create_line(x0,y0,x1,y1, dash=(2,4))
-            for i in self.stackList.commands:
-                if isinstance(i, Class_Box):
-                    self.canvas.itemconfig(i.canvasObject,fill='white')
-                    self.canvas.tag_raise(i.canvasObject)
-                    print 'made it here'
 
         self.refresh_canvas()
         # self.clear_canvas()
