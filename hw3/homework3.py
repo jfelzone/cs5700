@@ -349,8 +349,11 @@ class Generalization_Association(Command):
 
 import Tkinter as tk
 from Tkinter import *
+import cPickle as pickle
+import tkFileDialog
 
-class ExampleApp(tk.Tk):
+
+class MainApp(tk.Tk):
     def __init__(self):
         tk.Tk.__init__(self)
         self.minsize(width=800, height=700)
@@ -411,8 +414,8 @@ class ExampleApp(tk.Tk):
         self.undo_button.grid(row=9, column=0)
 
 
-        self.pen_button = Button(self, text='LOAD WORKSPACE', command=self.clear_canvas)
-        self.pen_button.grid(row=0, column=1)
+        self.load_button = Button(self, text='LOAD WORKSPACE', command=self.load_workspace)
+        self.load_button.grid(row=0, column=1)
 
         self.save_button = Button(self, text='SAVE WORKSPACE', command=self.save_canvas)
         self.save_button.grid(row=0  , column=2)
@@ -443,9 +446,20 @@ class ExampleApp(tk.Tk):
         self.save_file_entry.delete(0, "end")
 
     def save_canvas(self):
-        text = self.save_button.get() + " " + e1.get() + "\n"
-        with open("text.txt", "a") as f:
-            f.write(text)
+        with open( self.save_file_entry.get()+".p", "w" ) as f:
+            pickle.dump( self.realStackList, f )
+
+        # text = self.save_file_entry.get() + "\n"
+        # with open(self.save_file_entry+".txt", "w") as f:
+        #     f.write(text)
+    def load_workspace(self):
+        filename = tkFileDialog.askopenfilename(initialdir = "/home/jfelzien/cs5700/hw3",title = "Select file",filetypes = (("Canvas Files", "*.p"),("Python Files", "*.py" )))
+        # fname = askopenfilename(filetypes=(("Canvas Files", "*.p"),("Python Files", "*.py" )))
+        print filename
+        with open(filename) as f:
+            self.realStackList = pickle.load(f)
+
+        self.refresh_canvas()
 
     def diagram_name_user(self, event):
         self.diagram_name.config(fg='black')
@@ -532,6 +546,29 @@ class ExampleApp(tk.Tk):
         if self.drawingObjectArray[0]!=1 and self.drawingObjectArray[1]!=1 and self.drawingObjectArray[2] == 1:
             x0,y0 = (self.x, self.y)
             x1,y1 = (event.x, event.y)
+            #checking binary association
+            for index, i in enumerate(self.stackList.commands):
+                if isinstance(i, Class_Box):
+                    if self.check_bound(self.x, self.y, i):
+                        print "You are in a box"
+                        if y1 < i.y0:
+                            y0 = i.y0
+                        elif x1 > i.x1:
+                            x0 = i.x1
+                        elif y1 > i.y1:
+                            y0 = i.y1
+                        elif x1 < i.x0:
+                            x0 = i.x0
+                    if self.check_bound(x1,y1,i):
+                        #one final sequence for the connections
+                        if y0 < i.y0:
+                            y1 = i.y0
+                        elif x0 > i.x1:
+                            x1 = i.x1
+                        elif y0 > i.y1:
+                            y1 = i.y1
+                        elif x0 < i.x0:
+                            x1 = i.x0
             #generating new command class
             binaryLine = Binary_Association(x0,y0,x1,y1,self.canvas)
             self.add_stack_push_sequence(binaryLine)
@@ -755,5 +792,5 @@ class ExampleApp(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = ExampleApp()
+    app = MainApp()
     app.mainloop()
