@@ -119,7 +119,7 @@ class FindMisingIndices(AlgorithmBasis):
 # IDEA: here is another idea. lets store the positions of everything we want to solve and then from there treat the indices as the most important...
 # from there it is super easy to grab the rows, and columns right around there
 # i think i like that best so far..
-# IDEA: but now i think i need to generate the box stuff from where we are. so for example i think i want to say, here you are, what box are you in and how do you do that 
+# IDEA: but now i think i need to generate the box stuff from where we are. so for example i think i want to say, here you are, what box are you in and how do you do that
 
 
 if __name__ == "__main__":
