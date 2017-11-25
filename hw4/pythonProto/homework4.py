@@ -4,6 +4,7 @@
 ## proto for python code
 
 from sets import Set
+import math as m
 
 class SudukoData:
     def __init__(self, fileName):
@@ -41,6 +42,9 @@ class SudukoData:
         #print filer[1]
         self.generateMissingSpots()
         print self.missingIndices
+
+        #going to generate the different sub box pieces currentRow
+        self.generateSubBoxes()
     def generateMissingSpots(self):
         self.puzzlearray.pop(0)
         self.puzzlearray.pop(0)
@@ -48,6 +52,18 @@ class SudukoData:
             for index2, j in enumerate(i):
                 if self.puzzlearray[index1][index2] == '-':
                     self.missingIndices.append((index1, index2))
+
+    def generateSubBoxes(self):
+        for i in self.puzzlearray:
+            print i
+        self.subBoxes = {}
+        for i in xrange(0, self.size):
+            self.subBoxes[i] = []
+        print self.subBoxes
+
+        for x, i in enumerate(self.puzzlearray):
+            for y, j in enumerate(self.puzzlearray):
+                print x,y
 
 
 
@@ -121,6 +137,9 @@ class FindMisingIndices(AlgorithmBasis):
 # i think i like that best so far..
 # IDEA: but now i think i need to generate the box stuff from where we are. so for example i think i want to say, here you are, what box are you in and how do you do that
 
+# IDEA: i think i also need to generate the different pieces of how to gather the box indices... i think storing those indices will be the best way to tackle that portion
+# i think this could be a dictionary or something with a key that has an array of all of the index pairs or something like that
+# because from the indices i will be able to extract everything from the 2-d array
 
 if __name__ == "__main__":
     #testingFile = "SamplePuzzles/Input/Puzzle-4x4-0001.txt"
