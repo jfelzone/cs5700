@@ -66,9 +66,9 @@ class SudukoData:
                 #print x , y
                 if x <= 2 and y <= 2:
                     self.subBoxes[0].append((x,y))
-                elif x <= 5 and x >= 3 and y <=2:
+                elif x <= 2 and y <=5 and y >= 3:
                     self.subBoxes[1].append((x,y))
-                elif x <= 8 and x >= 6 and y <=2:
+                elif x <= 2 and y <=8 and y >= 6:
                     self.subBoxes[2].append((x,y))
                 elif x <= 2 and y >= 3 and y <= 5:
                     self.subBoxes[3].append((x,y))
@@ -76,7 +76,7 @@ class SudukoData:
                     self.subBoxes[4].append((x,y))
                 elif x >= 6 and y >= 3 and y <= 5:
                     self.subBoxes[5].append((x,y))
-                elif x >= 0 and x <= 2 and y >= 6 and y <= 8:
+                elif x >= 3 and x <= 5 and y >= 6 and y <= 8:
                     self.subBoxes[6].append((x,y))
                 elif x >=3 and x <= 5 and y >= 6 and y <= 8:
                     self.subBoxes[7].append((x,y))
@@ -120,6 +120,86 @@ class RowFillIn(AlgorithmBasis):
                             self.puzzle.puzzlearray[index1][index2] = value
                         else:
                             continue
+
+class EliminationBoxFillIn(AlgorithmBasis):
+    def __init__(self, puzzle, missingSlot):
+        self.puzzle = puzzle
+        self.missingSlot = missingSlot
+        self.boxLoc = None
+
+    def applyalgo(self):
+        pass
+
+    def valuesInARow(self):
+        totalVals = Set(self.puzzle.possibleValuesArray)
+        tempRow = []
+        for x, i in enumerate(self.puzzle.puzzlearray):
+            if x == self.missingSlot[0]:
+                tempRow = i
+        #print tempRow
+        results = []
+        for i in tempRow:
+            if i != '-':
+                results.append(i)
+        return results
+
+    def valuesNotInARow(self):
+        totalVals = Set(self.puzzle.possibleValuesArray)
+        valsInRow = Set(self.valuesInARow())
+
+        tempresults = totalVals - valsInRow
+
+        results = []
+        for i in tempresults:
+            results.append(i)
+        return results
+
+    def valuesInAColumn(self):
+        totalVals = Set(self.puzzle.possibleValuesArray)
+        tempCol = []
+        for x , i in enumerate(self.puzzle.puzzlearray):
+            for y , j in enumerate(i):
+                if y == self.missingSlot[1]:
+                    tempCol.append(j)
+        results = []
+        for i in tempCol:
+            if i != '-':
+                results.append(i)
+        return results
+
+
+    def valuesNotInAColumn(self):
+        totalVals = Set(self.puzzle.possibleValuesArray)
+        valsInRow = Set(self.valuesInAColumn())
+        tempresults = totalVals - valsInRow
+
+        results = []
+        for i in tempresults:
+            results.append(i)
+        return results
+
+    def isColInBox(self, columnIndex):
+        for i in self.puzzle.subBoxes:
+            if self.missingSlot in self.puzzle.subBoxes[i]:
+                self.boxLoc = i
+        print self.boxLoc
+
+        for i in self.puzzle.subBoxes[self.boxLoc]:
+            if i[1] == columnIndex:
+                return True
+        return False
+
+
+    def isRowInBox(self, rowIndex):
+        for i in self.puzzle.subBoxes:
+            if self.missingSlot in self.puzzle.subBoxes[i]:
+                self.boxLoc = i
+        print self.boxLoc
+        for i in self.puzzle.subBoxes[self.boxLoc]:
+            if i[0] == rowIndex:
+                return True
+        return False
+
 
 class SingleBoxFillIn(AlgorithmBasis):
     def __init__(self, puzzle, missingSlot):
@@ -236,6 +316,17 @@ if __name__ == "__main__":
 
     boxFill = SingleBoxFillIn(testPuzzle, testPuzzle.missingIndices[0])
     boxFill.applyalgo()
+
+    cancelTest = EliminationBoxFillIn(testPuzzle, testPuzzle.missingIndices[1])
+    print cancelTest.valuesInARow()
+    print cancelTest.valuesNotInARow()
+
+    print cancelTest.valuesInAColumn()
+    print cancelTest.valuesNotInAColumn()
+
+    print cancelTest.isRowInBox(2)
+    print cancelTest.isRowInBox(6)
+    print cancelTest.isColInBox(8)
 
     # this is the format we are going to want until everything is filled in i believe (something along these lines)
     # for i in testPuzzle.missingIndices:
