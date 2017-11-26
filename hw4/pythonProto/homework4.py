@@ -64,21 +64,25 @@ class SudukoData:
         for x, i in enumerate(self.puzzlearray):
             for y, j in enumerate(self.puzzlearray):
                 #print x , y
+
+                # this is all wrong
+
+                # i need to not only fix this but make it much much better
                 if x <= 2 and y <= 2:
                     self.subBoxes[0].append((x,y))
                 elif x <= 2 and y <=5 and y >= 3:
                     self.subBoxes[1].append((x,y))
                 elif x <= 2 and y <=8 and y >= 6:
                     self.subBoxes[2].append((x,y))
-                elif x <= 2 and y >= 3 and y <= 5:
+                elif x >= 3 and x <= 5 and y <= 2 and y >= 0:
                     self.subBoxes[3].append((x,y))
                 elif x >= 3 and x <= 5 and y >= 3 and y <= 5:
                     self.subBoxes[4].append((x,y))
-                elif x >= 6 and y >= 3 and y <= 5:
+                elif x >= 3 and x <=5 and y >= 6 and y <= 8:
                     self.subBoxes[5].append((x,y))
-                elif x >= 3 and x <= 5 and y >= 6 and y <= 8:
+                elif x >= 6 and x <= 8 and y >= 0 and y <= 2:
                     self.subBoxes[6].append((x,y))
-                elif x >=3 and x <= 5 and y >= 6 and y <= 8:
+                elif x >= 6 and x <= 8 and y >= 3 and y <= 5:
                     self.subBoxes[7].append((x,y))
                 elif x >= 6 and x <= 8 and y >= 6 and y <= 8:
                     self.subBoxes[8].append((x,y))
@@ -128,6 +132,7 @@ class EliminationBoxFillIn(AlgorithmBasis):
         self.boxLoc = None
 
     def applyalgo(self):
+
         pass
 
     def valuesInARow(self):
@@ -188,7 +193,6 @@ class EliminationBoxFillIn(AlgorithmBasis):
             if i[1] == columnIndex:
                 return True
         return False
-
 
     def isRowInBox(self, rowIndex):
         for i in self.puzzle.subBoxes:
