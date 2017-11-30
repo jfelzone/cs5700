@@ -11,6 +11,12 @@ class AlgorithmBasis:
     def getIndex(self):
     	return self.puzzle.missingIndices[0]
 
+    def getPossibleValues(self):
+    	return self.puzzle.possibleOptionsDict[self.getIndex()]
+
+    def getOtherPossibleValues(self, row, col):
+    	return self.puzzle.possibleOptionsDict[(row,col)]
+
     def logicPortion(self):
     	pass
 
@@ -24,6 +30,26 @@ class AlgorithmBasis:
     	pass
 
 
+class OnlyOneOption(AlgorithmBasis):
+	def logicPortion(self):
+		print "missing indices", self.puzzle.missingIndices
+		
+		index = self.getIndex()
+		subBoxSquare = self.puzzle.findSubBoxValue(index[0], index[1])
+		#print subBoxSquare
+		#works
+		print self.getPossibleValues()
+
+		if len(self.getPossibleValues()) == 1:
+			print 'yeah its 1'
+			self.puzzle.puzzlearray[index[0]][index[1]] = self.getPossibleValues()[0]
+			#self.puzzle.missingIndices.pop(0)
+			return True
+
+		else:
+			return False
+		
+
 class RowFillIn(AlgorithmBasis):
 	pass
 
@@ -33,4 +59,20 @@ class ColumnFillIn(AlgorithmBasis):
 class SquareCancellationFillIn(AlgorithmBasis):
 	def test(self):
 		print 'hello'
+
+	def logicPortion(self):
+		index = self.getIndex()
+		subBoxSquare = self.puzzle.findSubBoxValue(index[0], index[1])
+		#print subBoxSquare
+		#works
+		#print self.getPossibleValues()
+
+		tempAllOptions = []
+		for index , i in enumerate(self.puzzle.puzzlearray):
+			for index2 , j in enumerate(i):
+				if self.puzzle.findSubBoxValue(index, index2) == subBoxSquare and j == '-' and index != self.getIndex()[0] and index != self.getIndex()[1]:
+					tempAllOptions.append(self.getOtherPossibleValues(index, index2))
+
+		#print tempAllOptions
+		print "missing indices", self.puzzle.missingIndices
 

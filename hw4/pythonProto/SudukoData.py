@@ -26,6 +26,11 @@ class SudukoData:
         print self.size
 
         print self.possibleValuesArray
+
+        #pop off the values that we don't need
+        self.puzzlearray.pop(0)
+        self.puzzlearray.pop(0)
+
         #print filer[0]
         #print filer[1]
         self.generateMissingSpots()
@@ -38,8 +43,9 @@ class SudukoData:
 
 
     def generateMissingSpots(self):
-        self.puzzlearray.pop(0)
-        self.puzzlearray.pop(0)
+        self.missingIndices = []
+        # self.puzzlearray.pop(0)
+        # self.puzzlearray.pop(0)
         for index1, i in enumerate(self.puzzlearray):
             for index2, j in enumerate(i):
                 if self.puzzlearray[index1][index2] == '-':
@@ -128,6 +134,7 @@ class SudukoData:
             for index2 , j in enumerate(i):
                 if self.findSubBoxValue(index, index2) == tempSubBoxNumber:
                     tempValuesInBox.append(j)
+        #print "indices", rowIndex, columnIndex
         #print "tempValuesInBox" , tempValuesInBox
 
         totalVals = Set(self.possibleValuesArray)
@@ -138,6 +145,7 @@ class SudukoData:
         return totalVals - tempBox
 
     def generatePossibilities(self):
+        self.possibleOptionsDict = {}
         print '\n'
         
         for i in self.missingIndices:
@@ -146,13 +154,17 @@ class SudukoData:
             boxSet = self.findBoxPossibilities(i[0], i[1])
 
             setsArray = [rowSet, columnSet, boxSet]
+            print setsArray
 
-            minSize = 999
+            #smallest set logic was incorrect. we want the intersection (that is what is important)
+            # minSize = 999
 
-            for x in setsArray:
-                if len(x) < minSize:
-                    minSize = len(x)
-                    smallestSet = x
+            # for x in setsArray:
+            #     if len(x) < minSize:
+            #         minSize = len(x)
+            #         smallestSet = x
+
+            smallestSet = rowSet.intersection(columnSet).intersection(boxSet)
 
             print "smallestSet", smallestSet
             arrayOfSmallestSet = []
@@ -167,6 +179,9 @@ class SudukoData:
         for value in self.possibleOptionsDict:
             print value, self.possibleOptionsDict[value]
 
+    def refreshArrays(self):
+        self.generateMissingSpots()
+        self.generatePossibilities()
 
 
 
