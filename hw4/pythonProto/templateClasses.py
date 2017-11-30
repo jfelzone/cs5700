@@ -38,16 +38,30 @@ class OnlyOneOption(AlgorithmBasis):
 		subBoxSquare = self.puzzle.findSubBoxValue(index[0], index[1])
 		#print subBoxSquare
 		#works
-		print self.getPossibleValues()
+		#print self.getPossibleValues()
 
 		if len(self.getPossibleValues()) == 1:
-			print 'yeah its 1'
 			self.puzzle.puzzlearray[index[0]][index[1]] = self.getPossibleValues()[0]
 			#self.puzzle.missingIndices.pop(0)
 			return True
 
 		else:
 			return False
+
+
+# this will be used for guessing (just put the first one if we are unsure of what to put.)
+class GuessOption(AlgorithmBasis):
+	def logicPortion(self):
+		index = self.getIndex()
+		subBoxSquare = self.puzzle.findSubBoxValue(index[0], index[1])
+
+		if len(self.getPossibleValues()) > 1:
+			self.puzzle.puzzlearray[index[0]][index[1]] = self.getPossibleValues()[0]
+			return True
+
+		else:
+			return False
+
 		
 
 class RowFillIn(AlgorithmBasis):
