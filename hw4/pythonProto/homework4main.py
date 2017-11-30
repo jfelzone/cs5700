@@ -6,8 +6,10 @@
 from templateClasses import *
 
 import sys
+import time
 
 if __name__ == '__main__':
+	start_time = time.time()
 	#print len(sys.argv)
 	if sys.argv[1] == '-h':
 		print "command line arguments [1]  input text file name  [2]  output text file name "
@@ -57,3 +59,13 @@ if __name__ == '__main__':
 				file.write(str(j)+ '  ')
 			file.write('\n')
 
+		file.write('\n')
+		file.write('\n')
+
+		file.write("Total Time: " + str(time.time() - start_time))
+		file.write('\n')
+		file.write('\n')
+
+
+		file.write("Strategy \t\t\t Uses \t\t Time\n")
+		file.write(newTest.name+ "\t\t\t"+str(newTest.iterations)+"\t\t"+str(newTest.time))
