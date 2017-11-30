@@ -64,11 +64,6 @@ class GuessOption(AlgorithmBasis):
 
 		
 
-class RowFillIn(AlgorithmBasis):
-	pass
-
-class ColumnFillIn(AlgorithmBasis):
-	pass
 
 class SquareCancellationFillIn(AlgorithmBasis):
 	def test(self):
@@ -90,3 +85,18 @@ class SquareCancellationFillIn(AlgorithmBasis):
 		#print tempAllOptions
 		print "missing indices", self.puzzle.missingIndices
 
+
+class RowFillIn(AlgorithmBasis):
+	pass
+
+class ColumnFillIn(AlgorithmBasis):
+	pass
+
+class Twins(AlgorithmBasis):
+	pass
+
+class HiddenTwins(AlgorithmBasis):
+	pass
+
+class XWing(AlgorithmBasis):
+	pass
