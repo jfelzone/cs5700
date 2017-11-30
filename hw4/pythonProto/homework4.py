@@ -52,6 +52,7 @@ class SudukoData:
             for index2, j in enumerate(i):
                 if self.puzzlearray[index1][index2] == '-':
                     self.missingIndices.append((index1, index2))
+                    #it is at this point that we want to generate the possible values
 
     def generateSubBoxes(self):
         for i in self.puzzlearray:
