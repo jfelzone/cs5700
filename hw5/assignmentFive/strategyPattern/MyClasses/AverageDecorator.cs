@@ -1,0 +1,4 @@
+class AverageDecorator: Decorator
+{
+	
+}

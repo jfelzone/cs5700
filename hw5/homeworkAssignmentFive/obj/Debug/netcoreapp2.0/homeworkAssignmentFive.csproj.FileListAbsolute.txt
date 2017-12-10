@@ -1,0 +1,10 @@
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/obj/Debug/netcoreapp2.0/homeworkAssignmentFive.csproj.CoreCompileInputs.cache
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/obj/Debug/netcoreapp2.0/homeworkAssignmentFive.AssemblyInfoInputs.cache
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/obj/Debug/netcoreapp2.0/homeworkAssignmentFive.AssemblyInfo.cs
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/bin/Debug/netcoreapp2.0/homeworkAssignmentFive.deps.json
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/bin/Debug/netcoreapp2.0/homeworkAssignmentFive.runtimeconfig.json
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/bin/Debug/netcoreapp2.0/homeworkAssignmentFive.runtimeconfig.dev.json
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/bin/Debug/netcoreapp2.0/homeworkAssignmentFive.dll
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/bin/Debug/netcoreapp2.0/homeworkAssignmentFive.pdb
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/obj/Debug/netcoreapp2.0/homeworkAssignmentFive.dll
+/home/jfelzien/cs5700/hw5/homeworkAssignmentFive/obj/Debug/netcoreapp2.0/homeworkAssignmentFive.pdb

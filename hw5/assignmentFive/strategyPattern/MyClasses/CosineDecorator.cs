@@ -1,0 +1,6 @@
+
+
+class CosineDecorator : Decorator
+{
+	
+}
